@@ -1,0 +1,569 @@
+614*3
+gtree <- ggtree(hier.phy3) #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, reorderTO[,1:3],  width=1)  #,#
+              # colnames_angle=95, colnames_offset_y = .25) +#
+# 	scale_fill_viridis_c( name="continuous\nvalue") #+#
+# 	scale_y_continuous(limits=c(0,1000)) #
+p1
+gtree <- ggtree(hier.phy3) #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, reorderTO[,1:3]+1,  width=1)  #,#
+              # colnames_angle=95, colnames_offset_y = .25) +#
+# 	scale_fill_viridis_c( name="continuous\nvalue") #+#
+# 	scale_y_continuous(limits=c(0,1000)) #
+p1
+head(rownames(reorderTO))
+head(hier.phy3$tip.labels)
+head(hier.phy3$tip.label)
+gtree <- ggtree(hier.phy3) #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, data.frame(a=rnorm(614),b=rnorm(614)),  width=1)  #,#
+              # colnames_angle=95, colnames_offset_y = .25) +#
+# 	scale_fill_viridis_c( name="continuous\nvalue") #+#
+# 	scale_y_continuous(limits=c(0,1000)) #
+p1
+tmp <- data.frame(a=rnorm(614)
+,b=rnorm(614))
+rownames(tmp) <- rownames(hier.phy3)
+head(rownames(hier.phy3))
+rownames(tmp) <- hier.phy3$tip.label
+head(tmp)
+gtree <- ggtree(hier.phy3) #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, tmp,  width=1)  #,#
+              # colnames_angle=95, colnames_offset_y = .25) +#
+# 	scale_fill_viridis_c( name="continuous\nvalue") #+#
+# 	scale_y_continuous(limits=c(0,1000)) #
+p1
+range(reorderTO)
+reorderTO[,1]
+tmp2 <- reorderTO[,1:2]
+gtree <- ggtree(hier.phy3) #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, tmp2,  width=1)  #,#
+              # colnames_angle=95, colnames_offset_y = .25) +#
+# 	scale_fill_viridis_c( name="continuous\nvalue") #+#
+# 	scale_y_continuous(limits=c(0,1000)) #
+p1
+gtree <- ggtree(hier.phy3) #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, reorderTO[,1],  width=1)  #,#
+              # colnames_angle=95, colnames_offset_y = .25) +#
+# 	scale_fill_viridis_c( name="continuous\nvalue") #+#
+# 	scale_y_continuous(limits=c(0,1000)) #
+p1
+dim(reorderTO[,1])
+length(reorderTO[,1])
+is.na(reorderTO[,1])
+gtree <- ggtree(hier.phy3) #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, reorderTO[,1]+rnorm(614,sd=0.1),  width=1)  #,#
+              # colnames_angle=95, colnames_offset_y = .25) +#
+# 	scale_fill_viridis_c( name="continuous\nvalue") #+#
+# 	scale_y_continuous(limits=c(0,1000)) #
+p1
+data.frame(one =reorderTO[,1],two=reorderTO[,2])
+tmp12<- data.frame(one =reorderTO[,1],two=reorderTO[,2])
+gtree <- ggtree(hier.phy3) #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, tmp12,  width=1)  #,#
+              # colnames_angle=95, colnames_offset_y = .25) +#
+# 	scale_fill_viridis_c( name="continuous\nvalue") #+#
+# 	scale_y_continuous(limits=c(0,1000)) #
+p1
+gtree <- ggtree(hier.phy3) #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, as.data.frame(reorderTO),  width=1,high="red",low="white")  #,#
+              # colnames_angle=95, colnames_offset_y = .25) +#
+# 	scale_fill_viridis_c( name="continuous\nvalue") #+#
+# 	scale_y_continuous(limits=c(0,1000)) #
+p1
+colnames(mixAAsalt)
+rownames(mixAAsalt)
+colnames(mixAA)
+gtree <- ggtree(hier.phy3) #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, rotodf,  width=1,high="red",low="white",width=0.5) + #,#
+              colnames_angle=95, colnames_offset_y = .25) #
+p1
+p1 <- gheatmap(gtree, rotodf,  width=1,high="red",low="white",width=0.5, #,#
+              colnames_angle=95, colnames_offset_y = .25) #
+p1
+abline(h=200)
+par(oma=c(3,3,3,3))
+p1 <- gheatmap(gtree, rotodf,  width=1,high="red",low="white",width=0.5, #,#
+              colnames_angle=95, colnames_offset_y = .25) #
+p1
+gtree <- ggtree(hier.phy3) #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, rotodf,  high="red",low="white",width=0.5, #,#
+              colnames_angle=95, colnames_offset_y = .25) #
+p1
+dim(rotodf)
+rotodf <- as.data.frame(reorderTO)#
+colnames(rotodf) <- paste(  rep(colnames(mixAA),each=2), rep(c("0","S"), times=8),"."  )
+gtree <- ggtree(hier.phy3) #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, rotodf,  high="red",low="white",width=0.5, #,#
+              colnames_angle=95, colnames_offset_y = .25) #
+p1
+gtree <- ggtree(hier.phy3) #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, rotodf,  high="red",low="white",width=0.5, #,#
+              colnames_angle=95, colnames_offset_y = 10) #
+p1
+help(gtree)
+help(ggtree)
+gtree <- ggtree(hier.phy3,ladderize=F) #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, rotodf,  high="red",low="white",width=0.5, #,#
+              colnames_angle=95, colnames_offset_y = 10) #
+p1
+pdf("~/testggtreeheat.pdf",width=10,height=40)#
+gtree <- ggtree(hier.phy3,ladderize=F) #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, rotodf,  high="red",low="white",width=0.5, #,#
+              colnames_angle=95, colnames_offset_y = 10) #
+p1#
+dev.off()
+pdf("~/testggtreeheat.pdf",width=10,height=40)#
+gtree <- ggtree(hier.phy3,ladderize=F) #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, rotodf,  high="red",low="white",width=0.5, #,#
+              colnames_angle=95) #, colnames_offset_y = 10) #
+p1#
+dev.off()
+pdf("~/testggtreeheat.pdf",width=10,height=40)#
+gtree <- ggtree(hier.phy3,ladderize=F) #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, rotodf,  high="red",low="white",width=0.5, #,#
+              colnames_angle=95) #, colnames_offset_y = 10) +#
+              plot.margin = margin(2, 2, 2, 2, "cm")#
+p1#
+dev.off()
+help(geom_tiplab)
+gtree <- ggtree(hier.phy3,ladderize=F,layout="circular") #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, rotodf,  high="red",low="white", #,#
+              colnames_angle=95) #, colnames_offset_y = 10) +#
+              plot.margin = margin(2, 2, 2, 2, "cm")#
+p1
+pdf("~/testggtreeheat.pdf",width=100,height=100)#
+gtree <- ggtree(hier.phy3,ladderize=F,layout="circular") #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, rotodf,  high="red",low="white", #,#
+              colnames_angle=95) #, colnames_offset_y = 10) +#
+              plot.margin = margin(2, 2, 2, 2, "cm")#
+p1#
+dev.off()
+rotodf <- as.data.frame(reorderTO)#
+transfnames <- c("BZT","gly.BZT","BZTa+aa","BZT","aniline","amino3ph","phenanzine","mBZT","moxyBZT")#
+colnames(rotodf) <- paste(  rep(transfnames,each=2), rep(c("0","S"), times=8),sep="."  )
+transfnames
+colnames(products)
+rotodf <- as.data.frame(reorderTO)#
+transfnames <- c("BZT","gly.BZT","BZTa+aa","aniline","amino3ph","phenanzine","mBZT","moxyBZT")#
+colnames(rotodf) <- paste(  rep(transfnames,each=2), rep(c("0","S"), times=8),sep="."  )#
+pdf("~/testggtreeheat.pdf",width=50,height=50)#
+gtree <- ggtree(hier.phy3,ladderize=F,layout="circular") #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, rotodf,  high="red",low="gray", #,#
+              colnames_angle=95) #, colnames_offset_y = 10) +#
+              plot.margin = margin(2, 2, 2, 2, "cm")#
+p1#
+dev.off()
+pdf("~/testggtreeheatsq.pdf",width=50,height=50)#
+gtree <- ggtree(hier.phy3,ladderize=F) #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, rotodf,  high="red",low="gray", #,#
+              colnames_angle=95) #, colnames_offset_y = 10) +#
+#               plot.margin = margin(2, 2, 2, 2, "cm")#
+p1#
+dev.off()
+pdf("~/testggtreeheat.pdf",width=10,height=10)#
+gtree <- ggtree(hier.phy3,ladderize=F,layout="circular") #,yscale=c(0,615))#
+# gtree <- ggtree(hier.phy3,ladderize=F) #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, rotodf,  high="red",low="gray"), #,#
+#               colnames_angle=95) #, colnames_offset_y = 10) +#
+#               plot.margin = margin(2, 2, 2, 2, "cm")#
+p1#
+dev.off()
+pdf("~/testggtreeheat.pdf",width=10,height=10)#
+gtree <- ggtree(hier.phy3,ladderize=F,layout="circular") #,yscale=c(0,615))#
+# gtree <- ggtree(hier.phy3,ladderize=F) #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, rotodf,  high="red",low="gray")#. , #,#
+#               colnames_angle=95) #, colnames_offset_y = 10) +#
+#               plot.margin = margin(2, 2, 2, 2, "cm")#
+p1#
+dev.off()
+pdf("~/testggtreeheat.pdf",width=10,height=10)#
+gtree <- ggtree(hier.phy3,ladderize=F,layout="circular") #,yscale=c(0,615))#
+# gtree <- ggtree(hier.phy3,ladderize=F) #,yscale=c(0,615))#
+p1 <- gheatmap(gtree, rotodf,  high="red",low="gray",#
+               colnames_angle=90) #, colnames_offset_y = 10) +#
+#               plot.margin = margin(2, 2, 2, 2, "cm")#
+p1#
+dev.off()
+784/600
+780/600
+800/600
+826/600
+1080/600
+1075/600
+library(UpSetR)#
+#
+# analyze WOS records for AjB lit review on influence of microbes plant phenology#
+setwd("~/MicrobesAndPhenology/")#
+#
+# wos_recs <- read.csv("~/saved records WOS friday sep 11 2020 - WOS records.tsv",#
+# 					sep="\t",stringsAsFactors=F,na.strings = c("NA",""))#
+#
+cwos_recs <- read.csv("saved records WOS friday sep 11 2020 - Copy of WOS records.tsv",#
+					sep="\t",stringsAsFactors=F,na.strings = c("NA",""))#
+relevant <- cwos_recs$"relevantpt2"=="y"#
+PiM <- as.numeric(as.factor(cwos_recs$"Phenology....microbes...if.only.this..stop.."))==3 & !is.na(cwos_recs$"Phenology....microbes...if.only.this..stop..") # plant phenology influences microbes#
+PoM <- as.numeric(as.factor(cwos_recs$"phenology.of.micriobes...if.only.this..stop.."))==3 & !is.na(cwos_recs$"phenology.of.micriobes...if.only.this..stop..") #phenology of microbes#
+PiMPoM <- PiM | PoM#
+MiP <- !is.na(cwos_recs$What.phenological.trait.) # microbes influence plant phenology#
+MaltSonP <- cwos_recs$"Did.they.measure.selection...on.the.plant.only.."=="y" #phenology of microbes#
+minyear <- min(cwos_recs$Publication.Year,na.rm=T)#
+wosbyyear <- sapply(minyear:2020, function(yr) sum(cwos_recs$Publication.Year == yr,na.rm=T) )#
+wosbyyearR <- sapply(minyear:2020, function(yr) sum(cwos_recs[relevant,]$Publication.Year == yr,na.rm=T) )#
+wosbyyearPiM <- sapply(minyear:2020, function(yr) sum(cwos_recs[PiM,]$Publication.Year == yr,na.rm=T) )#
+wosbyyearPoM <- sapply(minyear:2020, function(yr) sum(cwos_recs[PoM,]$Publication.Year == yr,na.rm=T) )#
+wosbyyearPiMPoM <- sapply(minyear:2020, function(yr) sum(cwos_recs[PiMPoM,]$Publication.Year == yr,na.rm=T) )#
+wosbyyearMiP <- sapply(minyear:2020, function(yr) sum(cwos_recs[MiP,]$Publication.Year == yr,na.rm=T) )#
+wosbyyearSEL <- sapply(minyear:2020, function(yr) sum(cwos_recs[MaltSonP,]$Publication.Year == yr,na.rm=T) )#
+#
+years <- c(minyear:2020)
+par(mar=c(3,3,1,1))#
+par(oma=c(0,0,0,0))#
+plot(wosbyyear~years,type="l",lty=2,xlab="",ylab="")#
+	lines(wosbyyearR~years,col=rgb(0,0,0))#
+# 	lines(wosbyyearPiM~years,col=rgb(0.75,0,0))#
+# 	lines(wosbyyearPoM~years,col=rgb(0,0,0.75))#
+	lines(wosbyyearPiMPoM~years,col=rgb(0,0,0.75))#
+	lines(wosbyyearMiP~years,col=rgb(0.75,0,0))#
+	legend(1990,78,c("all records","relevant","phen -> micr, or phen of micr","micr -> phen"),#
+			 lty=c(2,1,1,1,1),col=rgb( c(0,0,0.75,0),0,c(0,0,0,0.75) ) ,bty="n"   ) #
+	mtext("WOS records",side=2,line=2)#
+	mtext("Year",side=1,line=2)
+par(mar=c(3,3,1,1))#
+par(oma=c(0,0,0,0))#
+plot(wosbyyearR~years,type="l",lty=2,xlab="",ylab="",ylim=c(0,25))#
+	lines(wosbyyearPiMPoM~years)#
+	lines(wosbyyearMiP~years, col=rgb(0.75,0,0))#
+	lines(wosbyyearSEL~years,col=rgb(0,0,0.75))#
+	legend(1987,26,c("plant microbes & phenology","microbe phenology (+ plant phenology -> microbes)","microbes affect phenology?","microbes alter selection on phenology?"),#
+			 lty=c(2,1,1 ),col=c(rgb(0,0,0),rgb(0,0,0),rgb(0.75,0,0),rgb(0,0,0.75)) ,bty="n"   ) #
+	mtext("WOS records",side=2,line=2)#
+	mtext("Year",side=1,line=2)
+table(relevant)#
+table(PiMPoM)#
+table(MiP)#
+table(cwos_recs$any.effect.in.study)#
+#
+wos_rel <- cwos_recs[which(relevant),]#
+#
+sim2and <- gsub("; ", wos_rel$microbetax.sim2,replacement="&")#
+simand <- gsub("; ", wos_rel$microbetax.sim,replacement="&")#
+loc2and <- gsub("; ", wos_rel$Microbelocation.2,replacement="&")#
+phen.and <- gsub("; ", wos_rel$phen.trait,replacement="&")
+upset(fromExpression(table(sim2and)),nsets=15, order.by = "freq")
+upset(fromExpression(table(loc2and)),nsets=10, order.by = "freq")
+upset(fromExpression(table(phen.and)), nsets=15, order.by = "freq")
+upset(fromExpression(table(phen.and)),set.metadata = cbind(phen.and), nsets=15, order.by = "freq")
+effobs <- ifelse(wos_rel$any.effect.in.study=="y",1,0)#
+tapply(effobs,phen.and,mean,na.rm=T)#
+tapply(effobs,sim2and,mean,na.rm=T)#
+tapply(effobs,sim2and,sum,na.rm=T)#
+#
+tapply(effobs,loc2and,mean,na.rm=T)
+table(simand)
+grep(micrtypetab <- sapply(unique(sim2and), function(mtype) grep(as.character(mtype),sim2and))#
+)
+micrtypetab <- sapply(unique(sim2and), function(mtype) grep(as.character(mtype),sim2and))
+dim(micrtypetab)
+grep("MF",sim2and)
+grepl("MF",sim2and)
+micrtypetab <- sapply(unique(sim2and), function(mtype) as.numeric(grepl(as.character(mtype),sim2and)))
+dim(micrtypetab)
+length(effobs)
+micrloctab <- sapply(unique(loc2and), function(ltype) as.numeric(grepl(as.character(ltype),loc2and)))#
+traittab <- sapply(unique(phen.and), function(ttype) as.numeric(grepl(as.character(ttype),phen.and)))
+head(traittab)
+table(phen.and)
+head(micrloctab)
+head(micrtypetab)
+phen.and
+unlist((unlist(sapply(sim2and, strsplit("&"))))
+head(unlist(sapply(sim2and, strsplit("&"))))
+head(unlist(sapply(sim2and, function(z) strsplit(z,"&"))))
+head(sapply(sim2and, function(z) strsplit(z,"&")))
+head(sim2and)
+tail(sim2and)
+unlist(sapply(sim2and, function(z) strsplit(z,"&")))
+length(unlist(sapply(sim2and, function(z) strsplit(z,"&"))))
+sim2and
+table(sim2and)
+unqtype <- unique(unlist(sapply(sim2and, function(z) strsplit(z,"&"))))#
+unqloc <- unique(unlist(sapply(loc2and, function(z) strsplit(z,"&"))))#
+unqtrt <- unique(unlist(sapply(phen.and, function(z) strsplit(z,"&"))))#
+#
+micrtypetab <- sapply(unqtype, function(mtype) as.numeric(grepl(as.character(mtype),sim2and)))#
+micrloctab <- sapply(unqloc, function(ltype) as.numeric(grepl(as.character(ltype),loc2and)))#
+traittab <- sapply(unqtrt, function(ttype) as.numeric(grepl(as.character(ttype),phen.and)))
+micrtypetab
+micrtypetab <- sapply(unqtype[!is.na(unqtype)], function(mtype) as.numeric(grepl(as.character(mtype),sim2and)))
+head(micrtypetab)
+micrtypetab <- sapply(unqtype[!is.na(unqtype)], function(mtype) as.numeric(grepl(as.character(mtype),sim2and)))#
+micrloctab <- sapply(unqloc[!is.na(unqloc)], function(ltype) as.numeric(grepl(as.character(ltype),loc2and)))#
+traittab <- sapply(unqtrt[!is.na(unqtrt)], function(ttype) as.numeric(grepl(as.character(ttype),phen.and)))
+tapply(effobs,micrtypetab$bacteria,sum,na.rm=T)
+micrtypetab <- as.data.frame(sapply(unqtype[!is.na(unqtype)], function(mtype) as.numeric(grepl(as.character(mtype),sim2and))))
+tapply(effobs,micrtypetab$bacteria,sum,na.rm=T)
+tapply(effobs,micrtypetab$bacteria,mean,na.rm=T)
+tapply(effobs,micrtypetab$MF,mean,na.rm=T)
+tapply(effobs,micrtypetab$fungi,mean,na.rm=T)
+tapply(effobs,micrtypetab$virus,mean,na.rm=T)
+head(effobs)
+length(effobs)
+sum(is.na(effobs))
+146-73
+43+21
+sum(effobs)
+sum(effobs,na.rm=T)
+tapply(effobs,micrtypetab$bacteria,length,na.rm=T)
+tapply(effobs,micrtypetab$bacteria,count,na.rm=T)
+micrloctab <- as.data.frame(sapply(unqloc[!is.na(unqloc)], function(ltype) as.numeric(grepl(as.character(ltype),loc2and))))#
+traittab <- as.data.frame(sapply(unqtrt[!is.na(unqtrt)], function(ttype) as.numeric(grepl(as.character(ttype),phen.and))))
+tapply(effobs,micrloctab$root,mean,na.rm=T)
+tapply(effobs,micrloctab$shoot,mean,na.rm=T)
+tapply(effobs,micrloctab$reproductive,mean,na.rm=T)
+tapply(effobs,micrloctab$seed,mean,na.rm=T)
+micrloctab$shoot
+effobs[micrloctab$shoot==1]
+tapply(effobs,micrloctab$shoot,sum,na.rm=T)
+head(micrtrttab)
+head(trttab)
+head(traittab)
+colnames(traittab)
+head(traittab$"flowering time")
+tapply(effobs,traittab$"flowering time",sum,na.rm=T)
+tapply(effobs,traittab$"flowering time",mean,na.rm=T)
+tapply(effobs,traittab$"germination time",mean,na.rm=T)
+tapply(effobs,traittab$"germination time",sum,na.rm=T)
+effcatdat <- data.frame(cbind(effobs, micrtypetab,micrloctab,traittab))
+dim(effcatdat)
+colnames(effcatdat)
+modmtypeBact <- MCMCglmm(cbind(effobs,effobs-1)~bacteria,family ="binomial" ,data=effcatdat,pr=T,verbose=F)
+library(MCMCglmm)
+modmtypeBact <- MCMCglmm(cbind(effobs,effobs-1)~bacteria,family ="binomial" ,data=effcatdat,pr=T,verbose=F)
+modmtypeBact <- MCMCglmm(cbind(effobs,effobs-1)~bacteria,family ="multinomial" ,data=effcatdat,pr=T,verbose=F)
+modmtypeBact <- MCMCglmm(cbind(effobs,effobs-1)~bacteria,family ="multinomial1" ,data=effcatdat,pr=T,verbose=F)
+modmtypeBact <- MCMCglmm(cbind(effobs,effobs-1)~bacteria,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F)
+modmtypeBact <- MCMCglmm(effobs~bacteria,family ="gaussian" ,data=effcatdat,pr=T,verbose=F)
+summary()
+summary(modmtypeBact)
+fails <- effobs-1#
+#
+effcatdat <- data.frame(cbind(effobs, fails, micrtypetab,micrloctab,traittab))#
+modmtypeBact <- MCMCglmm(cbind(effobs,fails)~bacteria,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F)
+fails <- 1-effobs#
+#
+effcatdat <- data.frame(cbind(effobs, fails, micrtypetab,micrloctab,traittab))#
+modmtypeBact <- MCMCglmm(cbind(effobs,fails)~bacteria,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F)
+summary(modmtypeBact)
+table(sim2and)
+modmtypeFungi <- MCMCglmm(cbind(effobs,fails)~fungi,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F)#
+modmtypeMF <- MCMCglmm(cbind(effobs,fails)~MF,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F)#
+modmtypeMixed <- MCMCglmm(cbind(effobs,fails)~mixed,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F)#
+modmtypeVirus <- MCMCglmm(cbind(effobs,fails)~virus,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F)
+summary()
+summary(modmtypeFungi)
+summary(modmtypeMF)
+summary(modmtypeVirus)
+table(effcatdat$virus)
+table(effcatdat$mixed)
+table(effcatdat$fungi)
+table(effcatdat$bacteria)
+table(effcatdat$MF)
+modmtypeBact <- MCMCglmm(cbind(effobs,fails)~bacteria,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
+modmtypeFungi <- MCMCglmm(cbind(effobs,fails)~fungi,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effects than avg rate without#
+modmtypeMF <- MCMCglmm(cbind(effobs,fails)~MF,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100) #n.s. fewer significant effects than average rate without#
+modmtypeMixed <- MCMCglmm(cbind(effobs,fails)~mixed,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without#
+modmtypeVirus <- MCMCglmm(cbind(effobs,fails)~virus,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100) #too few obs. not to be trusted
+summary(modmtypeFungi)
+summary(modmtypeBact)
+summary(modmtypeMF)
+summary(modmtypeMixed)
+colnames(effcatdat)
+modlocroot <- MCMCglmm(cbind(effobs,fails)~root,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without#
+modlocshoot <- MCMCglmm(cbind(effobs,fails)~shoot,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without#
+modlocreproductive <- MCMCglmm(cbind(effobs,fails)~reproductive,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without#
+modlocseed <- MCMCglmm(cbind(effobs,fails)~seed,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
+summary(modlocroot)
+summary(modlocshoot)
+summary(modlocreproductive)
+summary(modlocseed)
+modtraitflwrT <- MCMCglmm(cbind(effobs,fails)~"flowering time",family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
+modtraitflwrT <- MCMCglmm(cbind(effobs,fails)~"flowering.time",family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
+colnames(effcatdat)
+modtraitflwrT <- MCMCglmm(cbind(effobs,fails)~flowering.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
+summary()
+summary(modtraitflwrT)
+modtraitfbT <- MCMCglmm(cbind(effobs,fails)~floral.budset.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without#
+modtraitgT <- MCMCglmm(cbind(effobs,fails)~germination.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without#
+modtraitgP <- MCMCglmm(cbind(effobs,fails)~germination.prb,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
+modtraitphyl <- MCMCglmm(cbind(effobs,fails)~phyllochron,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without#
+modtraitsncT <- MCMCglmm(cbind(effobs,fails)~senescence.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without#
+modtraitmatT <- MCMCglmm(cbind(effobs,fails)~maturation.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without#
+modtraitfrtT <- MCMCglmm(cbind(effobs,fails)~fruiting.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without#
+modtraitflwrD <- MCMCglmm(cbind(effobs,fails)~flowering.duration,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without#
+modtraitrdT <- MCMCglmm(cbind(effobs,fails)~root.development.timing,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without#
+modtraitbubB <- MCMCglmm(cbind(effobs,fails)~budburst,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
+summary(modtraitfbT)
+summary(modtraitgT)
+summary(modtraitgP)
+table(phen.and)
+table(effcatdat$germination.time)
+table(effcatdat$germination.prb)
+summary(modtraitphyll)
+summary(modtraitphyl)
+table(effcatdat$phyllochron)
+summary(modtraitsncT)
+summary(modtraitmatT)
+summary(modtraitfrtT)
+summary(modtraitflwrD)
+summary(modtraitdT)
+summary(modtraitrdT)
+summary(modtraitbubB)
+table(effcatdat$budburst)
+modtraitflwrT <- MCMCglmm(cbind(effobs,fails)~flowering.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. fewer sig effs than avg rate without#
+modtraitfbT <- MCMCglmm(cbind(effobs,fails)~floral.budset.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without#
+modtraitgT <- MCMCglmm(cbind(effobs,fails)~germination.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#SIG ***more sig effs than avg rate without; but this is an odd mean and effect size#
+modtraitgP <- MCMCglmm(cbind(effobs,fails)~germination.prb,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without#
+modtraitphyl <- MCMCglmm(cbind(effobs,fails)~phyllochron,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#"sig" more, but there are only 2 studies#
+modtraitsncT <- MCMCglmm(cbind(effobs,fails)~senescence.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. fewer sig effs than avg rate without#
+modtraitmatT <- MCMCglmm(cbind(effobs,fails)~maturation.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without#
+modtraitfrtT <- MCMCglmm(cbind(effobs,fails)~fruiting.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without#
+modtraitflwrD <- MCMCglmm(cbind(effobs,fails)~flowering.duration,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without#
+modtraitrdT <- MCMCglmm(cbind(effobs,fails)~root.development.timing,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without#
+modtraitbudB <- MCMCglmm(cbind(effobs,fails)~budburst,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without; close to sig, but there's only three studies here
+summary(modtraitflwrT)
+summary(modtraitfbT)
+summary(modtraitgT)
+summary(modtraitgP)
+summary()
+summary(modtraitphyl)
+summary()
+summary(modtraitsncT)
+summary(modtraitmatT)
+summary(modtraitfrtT)
+summary()
+summary(modtraitflwrD)
+summary(modtraitrdT)
+summary(modtraitbudB)
+mean(effobs,na.rm+=T)
+mean(effobs,na.rm=T)
+table(effobs)
+64/(64+9)
+64+9
+tapply(effobs,micrtypetab$MF,mean,na.rm=T)#
+()
+tapply(effobs,micrtypetab$MF,mean,na.rm=T)
+tapply(effobs,micrtypetab$MF,sum,na.rm=T)
+effobs[micrtypetab$MF==1,]
+effobs[micrtypetab$MF==1]
+table(effobs[micrtypetab$MF==1])
+18/22
+effobs[micrtypetab$bacteria==1]
+table(effobs[micrtypetab$bacteria==1])
+tapply(effobs,micrtypetab$bacteria,sum,na.rm=T)
+tapply(effobs,micrtypetab$bacteria,mean,na.rm=T)
+tapply(effobs,micrtypetab$fungi,mean,na.rm=T)
+table(effobs[micrtypetab$fungi==1])
+table(effobs[micrtypetab$mixed==1])
+tapply(effobs,micrtypetab$mixed,mean,na.rm=T)
+tapply(effobs,traittab$"flowering time",mean,na.rm=T)
+table(effobs[traittab$"flowering time"==1])
+38/44
+table(effobs[traittab$"germination time"==1])
+table(effobs[traittab$"germination prb"==1])
+table(micrtypetab$MF)
+effobs
+rm(list=ls())
+library(UpSetR)#
+library(MCMCglmm)#
+#
+# analyze WOS records for AjB lit review on influence of microbes plant phenology#
+setwd("~/MicrobesAndPhenology/")#
+#
+# wos_recs <- read.csv("~/saved records WOS friday sep 11 2020 - WOS records.tsv",#
+# 					sep="\t",stringsAsFactors=F,na.strings = c("NA",""))#
+#
+cwos_recs <- read.csv("saved records WOS friday sep 11 2020 - Copy of WOS records.tsv",#
+					sep="\t",stringsAsFactors=F,na.strings = c("NA",""))#
+relevant <- cwos_recs$"relevantpt2"=="y"#
+PiM <- as.numeric(as.factor(cwos_recs$"Phenology....microbes...if.only.this..stop.."))==3 & !is.na(cwos_recs$"Phenology....microbes...if.only.this..stop..") # plant phenology influences microbes#
+PoM <- as.numeric(as.factor(cwos_recs$"phenology.of.micriobes...if.only.this..stop.."))==3 & !is.na(cwos_recs$"phenology.of.micriobes...if.only.this..stop..") #phenology of microbes#
+PiMPoM <- PiM | PoM#
+MiP <- !is.na(cwos_recs$What.phenological.trait.) # microbes influence plant phenology#
+MaltSonP <- cwos_recs$"Did.they.measure.selection...on.the.plant.only.."=="y" #phenology of microbes#
+minyear <- min(cwos_recs$Publication.Year,na.rm=T)#
+wosbyyear <- sapply(minyear:2020, function(yr) sum(cwos_recs$Publication.Year == yr,na.rm=T) )#
+wosbyyearR <- sapply(minyear:2020, function(yr) sum(cwos_recs[relevant,]$Publication.Year == yr,na.rm=T) )#
+wosbyyearPiM <- sapply(minyear:2020, function(yr) sum(cwos_recs[PiM,]$Publication.Year == yr,na.rm=T) )#
+wosbyyearPoM <- sapply(minyear:2020, function(yr) sum(cwos_recs[PoM,]$Publication.Year == yr,na.rm=T) )#
+wosbyyearPiMPoM <- sapply(minyear:2020, function(yr) sum(cwos_recs[PiMPoM,]$Publication.Year == yr,na.rm=T) )#
+wosbyyearMiP <- sapply(minyear:2020, function(yr) sum(cwos_recs[MiP,]$Publication.Year == yr,na.rm=T) )#
+wosbyyearSEL <- sapply(minyear:2020, function(yr) sum(cwos_recs[MaltSonP,]$Publication.Year == yr,na.rm=T) )#
+#
+years <- c(minyear:2020)#
+pdf("WOS_AjB_micr_phen.pdf",height=3.5,width=3.5)#
+par(mar=c(3,3,1,1))#
+par(oma=c(0,0,0,0))#
+plot(wosbyyear~years,type="l",lty=2,xlab="",ylab="")#
+	lines(wosbyyearR~years,col=rgb(0,0,0))#
+# 	lines(wosbyyearPiM~years,col=rgb(0.75,0,0))#
+# 	lines(wosbyyearPoM~years,col=rgb(0,0,0.75))#
+	lines(wosbyyearPiMPoM~years,col=rgb(0,0,0.75))#
+	lines(wosbyyearMiP~years,col=rgb(0.75,0,0))#
+	legend(1990,78,c("all records","relevant","phen -> micr, or phen of micr","micr -> phen"),#
+			 lty=c(2,1,1,1,1),col=rgb( c(0,0,0.75,0),0,c(0,0,0,0.75) ) ,bty="n"   ) #
+	mtext("WOS records",side=2,line=2)#
+	mtext("Year",side=1,line=2)#
+dev.off()#
+ pdf("WOS_AjB_micr_phen_r_sim.pdf",height=3.5,width=5.5)#
+par(mar=c(3,3,1,1))#
+par(oma=c(0,0,0,0))#
+plot(wosbyyearR~years,type="l",lty=2,xlab="",ylab="",ylim=c(0,25))#
+	lines(wosbyyearPiMPoM~years)#
+	lines(wosbyyearMiP~years, col=rgb(0.75,0,0))#
+	lines(wosbyyearSEL~years,col=rgb(0,0,0.75))#
+	legend(1987,26,c("plant microbes & phenology","microbe phenology (+ plant phenology -> microbes)","microbes affect phenology?","microbes alter selection on phenology?"),#
+			 lty=c(2,1,1 ),col=c(rgb(0,0,0),rgb(0,0,0),rgb(0.75,0,0),rgb(0,0,0.75)) ,bty="n"   ) #
+	mtext("WOS records",side=2,line=2)#
+	mtext("Year",side=1,line=2)#
+dev.off()#
+#
+table(relevant)#
+table(PiMPoM)#
+table(MiP)#
+table(cwos_recs$any.effect.in.study)#
+#
+wos_rel <- cwos_recs[which(relevant),]#
+#
+sim2and <- gsub("; ", wos_rel$microbetax.sim2,replacement="&")#
+simand <- gsub("; ", wos_rel$microbetax.sim,replacement="&")#
+loc2and <- gsub("; ", wos_rel$Microbelocation.2,replacement="&")#
+phen.and <- gsub("; ", wos_rel$phen.trait,replacement="&")#
+#
+pdf("upsetrtax.pdf",width=4,height=5)#
+upset(fromExpression(table(sim2and)),nsets=15, order.by = "freq")#
+dev.off()#
+pdf("upsetrtaxcomp.pdf",width=4,height=5)#
+upset(fromExpression(table(simand)),nsets=15, order.by = "freq")#
+dev.off()#
+pdf("upsetrloc.pdf",width=4,height=5)#
+upset(fromExpression(table(loc2and)),nsets=10, order.by = "freq")#
+dev.off()#
+pdf("upsetrtrt.pdf",width=4,height=5)#
+upset(fromExpression(table(phen.and)), nsets=15, order.by = "freq")#
+dev.off()
+ls()
+colnames(cwos_recs)
+dim(wos_rel)
+table(wos_rel$life.form.of.plant..annual.perennial.)
+wos_rel$life.form.of.plant..annual.perennial.[traittab$"senescence time"==1]
+effobs <- ifelse(wos_rel$any.effect.in.study=="y",1,0)#
+#
+unqtype <- unique(unlist(sapply(sim2and, function(z) strsplit(z,"&"))))#
+unqloc <- unique(unlist(sapply(loc2and, function(z) strsplit(z,"&"))))#
+unqtrt <- unique(unlist(sapply(phen.and, function(z) strsplit(z,"&"))))#
+#
+micrtypetab <- as.data.frame(sapply(unqtype[!is.na(unqtype)], function(mtype) as.numeric(grepl(as.character(mtype),sim2and))))#
+micrloctab <- as.data.frame(sapply(unqloc[!is.na(unqloc)], function(ltype) as.numeric(grepl(as.character(ltype),loc2and))))#
+traittab <- as.data.frame(sapply(unqtrt[!is.na(unqtrt)], function(ttype) as.numeric(grepl(as.character(ttype),phen.and))))
+wos_rel$life.form.of.plant..annual.perennial.[traittab$"senescence time"==1]
+wos_rel$life.form.of.plant..annual.perennial.[traittab$"maturation time"==1]
