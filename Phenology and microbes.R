@@ -24,8 +24,8 @@ setwd("~/MicrobesAndPhenology/")
 
 cwos_recs <- read.csv("saved records WOS friday sep 11 2020 - Copy of WOS records.tsv",
 					sep="\t",stringsAsFactors=F,na.strings = c("NA","")) #might consider a simplified version of this, so that column names are not as crazy
-split_recs <- read.csv("trimmed RECORDS FOR SPLITTING.csv",
-					sep="\t",stringsAsFactors=F,na.strings = c("NA","")) 
+split_recs <- read.csv("trimmed RECORDS FOR SPLITTING v3.csv", #sep="\t",
+					stringsAsFactors=F,na.strings = c("NA","")) 
 			#hand removed some columns, re-enforced the 5 options for direction of effect
 			#also re-enforced options for mating, microbe nutrient-pathogen-other; Micrloc.2; state.relative.too, incl 1 "sterilized soils" to "without focal microbe"
 			#also, there seem to be some extra rows still, perhaps those should be reomoved.
@@ -136,29 +136,30 @@ fails <- 1-effobs
 effcatdat <- data.frame(cbind(effobs, fails, micrtypetab,micrloctab,traittab))
 
 
-modmtypeBact <- MCMCglmm(cbind(effobs,fails)~bacteria,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
-modmtypeFungi <- MCMCglmm(cbind(effobs,fails)~fungi,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effects than avg rate without
-modmtypeMF <- MCMCglmm(cbind(effobs,fails)~MF,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100) #n.s. fewer significant effects than average rate without
-modmtypeMixed <- MCMCglmm(cbind(effobs,fails)~mixed,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
-modmtypeVirus <- MCMCglmm(cbind(effobs,fails)~virus,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100) #too few obs. not to be trusted
-
-modlocroot <- MCMCglmm(cbind(effobs,fails)~root,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
-modlocshoot <- MCMCglmm(cbind(effobs,fails)~shoot,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. fewer sig effs than avg rate without
-modlocreproductive <- MCMCglmm(cbind(effobs,fails)~reproductive,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. fewer sig effs than avg rate without
-modlocseed <- MCMCglmm(cbind(effobs,fails)~seed,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
-
-##model fit issues....effective samples is low in most
-modtraitflwrT <- MCMCglmm(cbind(effobs,fails)~flowering.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. fewer sig effs than avg rate without
-modtraitfbT <- MCMCglmm(cbind(effobs,fails)~floral.budset.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
-modtraitgT <- MCMCglmm(cbind(effobs,fails)~germination.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
-modtraitgP <- MCMCglmm(cbind(effobs,fails)~germination.prb,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
-modtraitphyl <- MCMCglmm(cbind(effobs,fails)~phyllochron,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#"sig" more, but there are only 2 studies
-modtraitsncT <- MCMCglmm(cbind(effobs,fails)~senescence.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. fewer sig effs than avg rate without
-modtraitmatT <- MCMCglmm(cbind(effobs,fails)~maturation.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
-modtraitfrtT <- MCMCglmm(cbind(effobs,fails)~fruiting.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. slightly fewer sig effs than avg rate without
-modtraitflwrD <- MCMCglmm(cbind(effobs,fails)~flowering.duration,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
-modtraitrdT <- MCMCglmm(cbind(effobs,fails)~root.development.timing,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
-modtraitbudB <- MCMCglmm(cbind(effobs,fails)~budburst,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without; close to sig, but there's only three studies here
+##these questions are all covered later
+# modmtypeBact <- MCMCglmm(cbind(effobs,fails)~bacteria,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
+# modmtypeFungi <- MCMCglmm(cbind(effobs,fails)~fungi,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effects than avg rate without
+# modmtypeMF <- MCMCglmm(cbind(effobs,fails)~MF,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100) #n.s. fewer significant effects than average rate without
+# modmtypeMixed <- MCMCglmm(cbind(effobs,fails)~mixed,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
+# modmtypeVirus <- MCMCglmm(cbind(effobs,fails)~virus,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100) #too few obs. not to be trusted
+# 
+# modlocroot <- MCMCglmm(cbind(effobs,fails)~root,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
+# modlocshoot <- MCMCglmm(cbind(effobs,fails)~shoot,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. fewer sig effs than avg rate without
+# modlocreproductive <- MCMCglmm(cbind(effobs,fails)~reproductive,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. fewer sig effs than avg rate without
+# modlocseed <- MCMCglmm(cbind(effobs,fails)~seed,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=100000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
+# 
+# ##model fit issues....effective samples is low in most
+# modtraitflwrT <- MCMCglmm(cbind(effobs,fails)~flowering.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. fewer sig effs than avg rate without
+# modtraitfbT <- MCMCglmm(cbind(effobs,fails)~floral.budset.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
+# modtraitgT <- MCMCglmm(cbind(effobs,fails)~germination.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
+# modtraitgP <- MCMCglmm(cbind(effobs,fails)~germination.prb,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
+# modtraitphyl <- MCMCglmm(cbind(effobs,fails)~phyllochron,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#"sig" more, but there are only 2 studies
+# modtraitsncT <- MCMCglmm(cbind(effobs,fails)~senescence.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. fewer sig effs than avg rate without
+# modtraitmatT <- MCMCglmm(cbind(effobs,fails)~maturation.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
+# modtraitfrtT <- MCMCglmm(cbind(effobs,fails)~fruiting.time,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. slightly fewer sig effs than avg rate without
+# modtraitflwrD <- MCMCglmm(cbind(effobs,fails)~flowering.duration,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
+# modtraitrdT <- MCMCglmm(cbind(effobs,fails)~root.development.timing,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without
+# modtraitbudB <- MCMCglmm(cbind(effobs,fails)~budburst,family ="multinomial2" ,data=effcatdat,pr=T,verbose=F,nitt=500000,burnin=10000,thin=100)#n.s. more sig effs than avg rate without; close to sig, but there's only three studies here
 
 
 
@@ -167,21 +168,18 @@ modtraitbudB <- MCMCglmm(cbind(effobs,fails)~budburst,family ="multinomial2" ,da
 ####Analysis of phenological timing records
 ################################################################################
 
+##consistency edits
+#remove singleton taxa type records from all for now
+split_recs_scr <- split_recs_scr[-which(split_recs_scr$micrtax.sim2 %in% c("virus","MF; fungi")),]
 
-split_recs_scr$culture.sim[split_recs_scr$culture.sim== "culture; direct"] <- "culture" # making a decision on Lu2018 
-split_recs_scr <- split_recs_scr[split_recs_scr$micrtax.sim2!= "MF; fungi",] #subtract the few records in this funny category
-#might consider keeping them for other analyses?
+split_recs_scr$direction.effect.split[split_recs_scr$direction.effect.split== "later"] <- "delayed" 
+split_recs_scr$direction.effect.split[split_recs_scr$direction.effect.split %in% c("decreased","reduced")] <- "narrowed" 
+split_recs_scr$direction.effect.split[split_recs_scr$direction.effect.split %in% c("increased","extended")] <- "expanded" 
+split_recs_scr$direction.effect.split[split_recs_scr$direction.effect.split== "none "] <- "none" 
+
+split_recs_scr$culture.sim[split_recs_scr$culture.sim %in% c("culture; direct","cutlure")] <- "culture" # making a decision on Lu2018 
 split_recs_scr$micrtax.sim2[split_recs_scr$micrtax.sim2=="fungi"] <- "otherfungi" #changing alphabetical position for convenience
-
-##numbers for text
-split_recs_scr$anyeffnum <- as.numeric(as.factor(split_recs_scr$anyeffect))-1
-sum(   tapply(split_recs_scr$anyeffnum[split_recs_scr$micrtax.sim2=="MF"],split_recs_scr$WOS.relevance.rank[split_recs_scr$micrtax.sim2=="MF"],sum) ==0)#0
-length(tapply(split_recs_scr$anyeffnum[split_recs_scr$micrtax.sim2=="MF"],split_recs_scr$WOS.relevance.rank[split_recs_scr$micrtax.sim2=="MF"],sum))#13
-sum(   tapply(split_recs_scr$anyeffnum[split_recs_scr$micrtax.sim2=="bacteria"],split_recs_scr$WOS.relevance.rank[split_recs_scr$micrtax.sim2=="bacteria"],sum) ==0)#0
-length(tapply(split_recs_scr$anyeffnum[split_recs_scr$micrtax.sim2=="bacteria"],split_recs_scr$WOS.relevance.rank[split_recs_scr$micrtax.sim2=="bacteria"],sum))#13
-length(unique(split_recs_scr$WOS.relevance.rank[split_recs_scr$phen.trait.2=="senescence time"]))
-length(unique(split_recs_scr$WOS.relevance.rank[split_recs_scr$phen.trait.2=="senescence time"]))
-length(unique(split_recs_scr$WOS.relevance.rank[split_recs_scr$phen.trait.2 %in% c("phyllochron","budburst") ]))
+split_recs_scr$micrtax.sim2[split_recs_scr$micrtax.sim2=="rhizobia"] <- "bacteria" #rhizobia not allowed in this category
 
 numeric.phen.eff <- rep(NA, length=nrow(split_recs_scr))
 numeric.phen.eff[split_recs_scr$direction.effect.split=="earlier"] <- -1
@@ -195,12 +193,18 @@ split_recs_scr$lifeform2[  split_recs_scr$lifeform %in% c("annual in cultivation
 split_recs_scr$lifeform2[  split_recs_scr$lifeform =="perennial (biennial?)" ] <-  "perennial"
 split_recs_scr$mating2 <- split_recs_scr$mating
 split_recs_scr$mating2 [is.na(split_recs_scr$mating)] <- "unk"
+split_recs_scr$mating2 [split_recs_scr$mating=="outcross?"] <- "unk"
 split_recs_scr$mating2 [split_recs_scr$mating=="both"] <- "s+o"
+split_recs_scr$mating2 [split_recs_scr$mating %in% c("selfie","selifer","selfier")] <- "selfer" #correcting spelling errors
+split_recs_scr$phen.trait.2[split_recs_scr$phen.trait.2=='"budburst"'] <- "budburst" #correcting spelling errors
+
+
 
 split_recs_scr$micrloc3 <- split_recs_scr$Micrloc.2
 split_recs_scr$micrloc3 [split_recs_scr$Micrloc.2%in% c("reproductive; shoot","root; shoot; reproductive","root; shoot; reproductive; seed")] <- "various incl reproductive"
-split_recs_scr$micrloc3 [split_recs_scr$Micrloc.2%in% c("seed; shoot","root; shoot","root; seed")] <- "various not incl reproductive"
+split_recs_scr$micrloc3 [split_recs_scr$Micrloc.2%in% c("seed; shoot","root; shoot","root; seed","root; shoot; seed")] <- "various not incl reproductive"
 split_recs_scr$micrloc3 [split_recs_scr$Micrloc.2=="seed "] <- "seed"
+split_recs_scr$micrloc3 [split_recs_scr$Micrloc.2=="leaves"] <- "shoot"
 
 ##variables for binomial versions
 split_recs_scr$isEarlyOrNrw <- ifelse(numeric.phen.eff=="-1",1,0)
@@ -209,6 +213,18 @@ split_recs_scr$isDelayOrExp <- ifelse(numeric.phen.eff=="1",1,0)
 split_recs_scr$notDelayOrExp <- 1-split_recs_scr$isDelayOrExp
 split_recs_scr$isSig <- ifelse(numeric.phen.eff=="1" | numeric.phen.eff=="-1",1,0)
 split_recs_scr$notSig <- 1- split_recs_scr$isSig 
+
+
+##numbers for text
+split_recs_scr$anyeffnum <- as.numeric(as.factor(split_recs_scr$anyeffect))-1
+sum(   tapply(split_recs_scr$anyeffnum[split_recs_scr$micrtax.sim2=="MF"],split_recs_scr$WOS.relevance.rank[split_recs_scr$micrtax.sim2=="MF"],sum) ==0)#4
+length(tapply(split_recs_scr$anyeffnum[split_recs_scr$micrtax.sim2=="MF"],split_recs_scr$WOS.relevance.rank[split_recs_scr$micrtax.sim2=="MF"],sum))#17  17-4 = 13
+sum(   tapply(split_recs_scr$anyeffnum[split_recs_scr$micrtax.sim2=="bacteria"],split_recs_scr$WOS.relevance.rank[split_recs_scr$micrtax.sim2=="bacteria"],sum) ==0)#0
+length(tapply(split_recs_scr$anyeffnum[split_recs_scr$micrtax.sim2=="bacteria"],split_recs_scr$WOS.relevance.rank[split_recs_scr$micrtax.sim2=="bacteria"],sum))#13
+table(split_recs_scr$WOS.relevance.rank[split_recs_scr$micrloc3=="various incl reproductive"])
+length(unique(split_recs_scr$WOS.relevance.rank[split_recs_scr$phen.trait.2=="fruiting time"]))
+length(unique(split_recs_scr$WOS.relevance.rank[split_recs_scr$phen.trait.2=="senescence time"]))
+length(unique(split_recs_scr$WOS.relevance.rank[split_recs_scr$phen.trait.2 %in% c("phyllochron","budburst") ]))
 
 flowering <- split_recs_scr[split_recs_scr$phen.trait.2=="flowering time",]
 	flowering$dummyWOSrelrank <- flowering$WOS.relevance.rank
@@ -222,21 +238,21 @@ germtime <- split_recs_scr[split_recs_scr$phen.trait.2=="germination time",]
 germtimeMAT <- split_recs_scr[split_recs_scr$phen.trait.2=="germination time" & split_recs_scr$mating2 != "unk" & split_recs_scr$mating2 != "s+o",]
 	germtimeMAT$dummyWOSrelrank <- germtimeMAT$WOS.relevance.rank
 	germtimeMAT$dummyWOSrelrank[germtimeMAT$dummyWOSrelran%in%names(table(germtimeMAT$WOS.relevance.rank)[table(germtimeMAT$WOS.relevance.rank)<13])] <- "binned"
-germprb <- split_recs_scr[split_recs_scr$phen.trait.2=="germination prb"& split_recs_scr$mating2 != "unk" & split_recs_scr$mating2 != "s+o",]
+germprb <- split_recs_scr[split_recs_scr$phen.trait.2=="germination prb",]
 	germprb$dummyWOSrelrank <- germprb$WOS.relevance.rank
 	germprb$dummyWOSrelrank[germprb$dummyWOSrelran%in%names(table(germprb$WOS.relevance.rank)[table(germprb$WOS.relevance.rank)<13])] <- "binned"
-# 	germprb<- germprb[-which(germprb$culture.sim=="observed"),] #removing the sole record that is not manipulated
-#no longer need to remove the observed record; as not checking how this relates to results 
 germprbMAT <- split_recs_scr[split_recs_scr$phen.trait.2=="germination prb" & split_recs_scr$mating2 != "unk" & split_recs_scr$mating2 != "s+o",]
 	germprbMAT$dummyWOSrelrank <- germprbMAT$WOS.relevance.rank
 	germprbMAT$dummyWOSrelrank[germprbMAT$dummyWOSrelran%in%names(table(germprbMAT$WOS.relevance.rank)[table(germprbMAT$WOS.relevance.rank)<13])] <- "binned"
-# 	germprbMAT<- germprbMAT[-which(germprbMAT$culture.sim=="observed"),] #removing the sole record that is not manipulated
+allphen <- split_recs_scr[!is.na(split_recs_scr$phen.trait.2),]
+	allphen$dummyWOSrelrank <- allphen$WOS.relevance.rank
+	allphen$dummyWOSrelrank[allphen$dummyWOSrelran%in%names(table(allphen$WOS.relevance.rank)[table(allphen$WOS.relevance.rank)<13])] <- "binned"
 
 
 ###for numbers in text:
 flowering$anyeffnum <- as.numeric(as.factor(flowering$anyeffect))-1
 sum(tapply(flowering$anyeffnum,flowering$WOS.relevance.rank,sum) == 0) #6
-length(tapply(flowering$anyeffnum,flowering$WOS.relevance.rank,sum))#38
+length(tapply(flowering$anyeffnum,flowering$WOS.relevance.rank,sum))#39
 germtime$anyeffnum <- as.numeric(as.factor(germtime$anyeffect))-1
 sum(tapply(germtime$anyeffnum,germtime$WOS.relevance.rank,sum) ==0)#1 -- note this record only appears in germtime, not germprb
 length(tapply(germtime$anyeffnum,germtime$WOS.relevance.rank,sum))#19
@@ -250,7 +266,7 @@ priornr=list(R=list(V= 1, fix=1))
 prior=list(R=list(V= 1, fix=1), G=list(G1=list(V=1, nu=0)))
 priornuup=list(R=list(V= 1, fix=1), G=list(G1=list(V=1, nu=8)))#turning this degree of belief way up solved sampling issues for flowering time
 	#estimates for intercept and random effects became more independent, because this shunts variation to be explained by fixed effect when there isn't information in the data for the random effect
-prior2=list(R=list(V= 1, fix=1), G=list(G1=list(V=1, nu=0),G2=list(V=1, nu=0)))
+# prior2=list(R=list(V= 1, fix=1), G=list(G1=list(V=1, nu=0),G2=list(V=1, nu=0)))
 priornuup2=list(R=list(V= 1, fix=1), G=list(G1=list(V=1, nu=8),G2=list(V=1, nu=8)))
 #after fitting the flowering model with various priors for the case with random effects(prior 2 onwards, the latter two of which are meant for no-intercept models); and various levels of binning,
 ###I conclude that the prior doesn't seem to help with the correlation issues between the posterior fixed and random effects. These issues are exacerbated by two little or too much binning
@@ -258,10 +274,10 @@ priornuup2=list(R=list(V= 1, fix=1), G=list(G1=list(V=1, nu=8),G2=list(V=1, nu=8
 ####no-intercept models seem to make all problems worse.
 
 ######BINOMIALS
-# flowerbiINT <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~1,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
+ traitdiffs <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~phen.trait.2,random = ~dummyWOSrelrank,data=allphen,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
+ traitDdiffs <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~phen.trait.2,random = ~dummyWOSrelrank,data=allphen,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
 
 flowerbitax <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrtax.sim2,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
-#a a b b 
 flowerbiscom <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~Strainvcomm.1,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 flowerbimat <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~mating2,random = ~dummyWOSrelrank,data=floweringMAT,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 flowerbilh <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~lifeform2,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
@@ -271,26 +287,8 @@ flowerDbiscom <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~Strainvcomm.1,rando
 flowerDbimat <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~mating2,random = ~dummyWOSrelrank,data=floweringMAT,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 flowerDbilh <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~lifeform2,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 flowerDbiloc <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrloc3,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
-earlyFmns <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
-		 function(z) tapply(flowering$isEarlyOrNrw,flowering[,colnames(flowering)==z],mean) )
-	earlyFmns[[3]] <- tapply(floweringMAT$isEarlyOrNrw,floweringMAT[,colnames(floweringMAT)=="mating2"],mean)
-	earlyFmns[[6]] <- mean(floweringMAT$isEarlyOrNrw)
-earlyFses <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
-		 function(z) tapply(flowering$isEarlyOrNrw,flowering[,colnames(flowering)==z],std.error) )
-	earlyFses[[3]] <- tapply(floweringMAT$isEarlyOrNrw,floweringMAT[,colnames(floweringMAT)=="mating2"],std.error)
-	earlyFses[[6]] <- std.error(floweringMAT$isEarlyOrNrw)
-delayFmns <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
-		 function(z) tapply(flowering$isDelayOrExp,flowering[,colnames(flowering)==z],mean) )
-	delayFmns[[3]] <- tapply(floweringMAT$isDelayOrExp,floweringMAT[,colnames(floweringMAT)=="mating2"],mean)
-	delayFmns[[6]] <- mean(floweringMAT$isDelayOrExp)
-delayFses <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
-		 function(z) tapply(flowering$isDelayOrExp,flowering[,colnames(flowering)==z],std.error) )
-	delayFses[[3]] <- tapply(floweringMAT$isDelayOrExp,floweringMAT[,colnames(floweringMAT)=="mating2"],std.error)
-	delayFses[[6]] <- std.error(floweringMAT$isDelayOrExp)
 
-#more likely to be earlier:bacteria vs fungi (simplified micr only); culture inoc vs removed exps; strains vs mixed; ; annuals vs perennials
 germtimebitax <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrtax.sim2,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
-#b a c b
 germtimebiscom <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~Strainvcomm.1,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germtimebimat <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~mating2,random = ~dummyWOSrelrank,data=germtimeMAT,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germtimebilh <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~lifeform2,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
@@ -300,175 +298,162 @@ germtimeDbiscom <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~Strainvcomm.1,ran
 germtimeDbimat <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~mating2,random = ~dummyWOSrelrank,data=germtimeMAT,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germtimeDbilh <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~lifeform2,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germtimeDbiloc <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrloc3,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
-earlyGmns <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
-		 function(z) tapply(germtime$isEarlyOrNrw,germtime[,colnames(germtime)==z],mean) )
-	earlyGmns[[3]] <- tapply(germtimeMAT$isEarlyOrNrw,germtimeMAT[,colnames(germtimeMAT)=="mating2"],mean)
-	earlyGmns[[6]] <- mean(germtime$isEarlyOrNrw)
-earlyGses <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
-		 function(z) tapply(germtime$isEarlyOrNrw,germtime[,colnames(germtime)==z],std.error) )
-	earlyGses[[3]] <- tapply(germtimeMAT$isEarlyOrNrw,germtimeMAT[,colnames(germtimeMAT)=="mating2"],std.error)
-	earlyGses[[6]] <- std.error(germtime$isEarlyOrNrw)
-delayGmns <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
-		 function(z) tapply(germtime$isDelayOrExp,germtime[,colnames(germtime)==z],mean) )
-	delayGmns[[3]] <- tapply(germtimeMAT$isDelayOrExp,germtimeMAT[,colnames(germtimeMAT)=="mating2"],mean)
-	delayGmns[[6]] <- mean(germtime$isDelayOrExp)
-delayGses <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
-		 function(z) tapply(germtime$isDelayOrExp,germtime[,colnames(germtime)==z],std.error) )
-	delayGses[[3]] <- tapply(germtimeMAT$isDelayOrExp,germtimeMAT[,colnames(germtimeMAT)=="mating2"],std.error)
-	delayGses[[6]] <- std.error(germtime$isDelayOrExp)
-
 
 germprbbitax <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrtax.sim2,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germprbbiscom <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~Strainvcomm.1,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
-germprbbimat <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~mating2,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germprbbimat <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~mating2,random = ~dummyWOSrelrank,data=germprbMAT,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germprbbilh <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~lifeform2,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germprbbiloc <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrloc3,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germprbDbitax <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrtax.sim2,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germprbDbiscom <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~Strainvcomm.1,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
-germprbDbimat <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~mating2,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germprbDbimat <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~mating2,random = ~dummyWOSrelrank,data=germprbMAT,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germprbDbilh <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~lifeform2,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germprbDbiloc <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrloc3,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
-earlyGPmns <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
-		 function(z) tapply(germprb$isEarlyOrNrw,germprb[,colnames(germprb)==z],mean) )
-	earlyGPmns[[3]] <- tapply(germprbMAT$isEarlyOrNrw,germprbMAT[,colnames(germprbMAT)=="mating2"],mean)
-	earlyGPmns[[6]] <- mean(germprb$isEarlyOrNrw)
-earlyGPses <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
-		 function(z) tapply(germprb$isEarlyOrNrw,germprb[,colnames(germprb)==z],std.error) )
-	earlyGPses[[3]] <- tapply(germprbMAT$isEarlyOrNrw,germprbMAT[,colnames(germprbMAT)=="mating2"],std.error)
-	earlyGPses[[6]] <- std.error(germprb$isEarlyOrNrw)
-delayGPmns <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
-		 function(z) tapply(germprb$isDelayOrExp,germprb[,colnames(germprb)==z],mean) )
-	delayGPmns[[3]] <- tapply(germprbMAT$isDelayOrExp,germprbMAT[,colnames(germprbMAT)=="mating2"],mean)
-	delayGPmns[[6]] <- mean(germprb$isDelayOrExp)
-delayGPses <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
-		 function(z) tapply(germprb$isDelayOrExp,germprb[,colnames(germprb)==z],std.error) )
-	delayGPses[[3]] <- tapply(germprbMAT$isDelayOrExp,germprbMAT[,colnames(germprbMAT)=="mating2"],std.error)
-	delayGPses[[6]] <- std.error(germprb$isDelayOrExp)
 
+
+##get means weighted by study random effect category
+mtypes  <- c("bacteria","MF","mixed","otherfungi")
+ctypes <- c("community","strain","strain mix")
+lhtypes <- c("annual","both","perennial")
+loctypes <- c("root","seed","shoot","various incl reproductive","various not incl reproductive")
+typelist <- list(mtypes,ctypes,lhtypes,loctypes)
+cols <- c("micrtax.sim2","Strainvcomm.1","lifeform2","micrloc3")
+wosdf <- unique(flowering$dummyWOSrelrank)
+wosdgt <- unique(germtime$dummyWOSrelrank)
+wosdgp <- unique(germprb$dummyWOSrelrank)
+matypes <- c("selfer","outcross")
+wosdfM <- unique(floweringMAT$dummyWOSrelrank)
+wosdgtM <- unique(germtimeMAT$dummyWOSrelrank)
+wosdgpM <- unique(germprbMAT$dummyWOSrelrank)
+fxtxE <- lapply(1:length(typelist), function(type) sapply(typelist[[type]], function(m)  sapply(wosdf, function(w)  mean(flowering$isEarlyOrNrw[flowering$dummyWOSrelrank==w & flowering[,which(colnames(flowering)==cols[type])]==m] )   )))
+fxtxEse <- lapply(1:length(typelist), function(type) sapply(typelist[[type]], function(m)  sapply(wosdf, function(w)  std.error(flowering$isEarlyOrNrw[flowering$dummyWOSrelrank==w & flowering[,which(colnames(flowering)==cols[type])]==m] )   )))
+	fxtxE[[5]] <-  sapply(matypes, function(m)  sapply(wosdfM, function(w)  mean(floweringMAT$isEarlyOrNrw[floweringMAT$dummyWOSrelrank==w & floweringMAT$mating2==m ])   ))
+	fxtxEse[[5]] <-  sapply(matypes, function(m)  sapply(wosdfM, function(w)  std.error(floweringMAT$isEarlyOrNrw[floweringMAT$dummyWOSrelrank==w & floweringMAT$mating2==m ])   ))
+	flwrE.m <- unlist(lapply(1:length(fxtxE), function(type) colMeans(fxtxE[[type]],na.rm=T)))
+	flwrE.se <-unlist(lapply(1:length(fxtxEse), function(type)  sapply(1:ncol(fxtxEse[[type]]), function(m) mean(fxtxEse[[type]][,m],na.rm=T))))
+	flwrE.m <-  c(flwrE.m, mean(flowering$isEarlyOrNrw))
+	flwrE.se <-  c(flwrE.se, std.error(flowering$isEarlyOrNrw))
+gTxtxE <- lapply(1:length(typelist), function(type) sapply(typelist[[type]], function(m)  sapply(wosdf, function(w)  mean(germtime$isEarlyOrNrw[germtime$dummyWOSrelrank==w & germtime[,which(colnames(germtime)==cols[type])]==m] )   )))
+gTxtxEse <- lapply(1:length(typelist), function(type) sapply(typelist[[type]], function(m)  sapply(wosdf, function(w)  std.error(germtime$isEarlyOrNrw[germtime$dummyWOSrelrank==w & germtime[,which(colnames(germtime)==cols[type])]==m] )   )))
+	gTxtxE[[5]] <-  sapply(matypes, function(m)  sapply(wosdgtM, function(w)  mean(germtimeMAT$isEarlyOrNrw[germtimeMAT$dummyWOSrelrank==w & germtimeMAT$mating2==m ])   ))
+	gTxtxEse[[5]] <-  sapply(matypes, function(m)  sapply(wosdgtM, function(w)  std.error(germtimeMAT$isEarlyOrNrw[germtimeMAT$dummyWOSrelrank==w & germtimeMAT$mating2==m ])   ))
+	germTE.m <- unlist(lapply(1:length(gTxtxE), function(type) colMeans(gTxtxE[[type]],na.rm=T)))
+	germTE.se <-unlist(lapply(1:length(gTxtxEse), function(type)  sapply(1:ncol(gTxtxEse[[type]]), function(m) mean(gTxtxEse[[type]][,m],na.rm=T))))
+	germTE.m <-  c(germTE.m, mean(germtime$isEarlyOrNrw))
+	germTE.se <-  c(germTE.se, std.error(germtime$isEarlyOrNrw))
+gPxtxE <- lapply(1:length(typelist), function(type) sapply(typelist[[type]], function(m)  sapply(wosdf, function(w)  mean(germprb$isEarlyOrNrw[germprb$dummyWOSrelrank==w & germprb[,which(colnames(germprb)==cols[type])]==m] )   )))
+gPxtxEse <- lapply(1:length(typelist), function(type) sapply(typelist[[type]], function(m)  sapply(wosdf, function(w)  std.error(germprb$isEarlyOrNrw[germprb$dummyWOSrelrank==w & germprb[,which(colnames(germprb)==cols[type])]==m] )   )))
+	gPxtxE[[5]] <-  sapply(matypes, function(m)  sapply(wosdgpM, function(w)  mean(germprbMAT$isEarlyOrNrw[germprbMAT$dummyWOSrelrank==w & germprbMAT$mating2==m ])   ))
+	gPxtxEse[[5]] <-  sapply(matypes, function(m)  sapply(wosdgpM, function(w)  std.error(germprbMAT$isEarlyOrNrw[germprbMAT$dummyWOSrelrank==w & germprbMAT$mating2==m ])   ))
+	germPE.m <- unlist(lapply(1:length(gPxtxE), function(type) colMeans(gPxtxE[[type]],na.rm=T)))
+	germPE.se <-unlist(lapply(1:length(gPxtxEse), function(type)  sapply(1:ncol(gPxtxEse[[type]]), function(m) mean(gPxtxEse[[type]][,m],na.rm=T))))
+	germPE.m <-  c(germPE.m, mean(germprb$isEarlyOrNrw))
+	germPE.se <-  c(germPE.se, std.error(germprb$isEarlyOrNrw))
+fxtxD <- lapply(1:length(typelist), function(type) sapply(typelist[[type]], function(m)  sapply(wosdf, function(w)  mean(flowering$isDelayOrExp[flowering$dummyWOSrelrank==w & flowering[,which(colnames(flowering)==cols[type])]==m] )   )))
+fxtxDse <- lapply(1:length(typelist), function(type) sapply(typelist[[type]], function(m)  sapply(wosdf, function(w)  std.error(flowering$isDelayOrExp[flowering$dummyWOSrelrank==w & flowering[,which(colnames(flowering)==cols[type])]==m] )   )))
+	fxtxD[[5]] <-  sapply(matypes, function(m)  sapply(wosdfM, function(w)  mean(floweringMAT$isDelayOrExp[floweringMAT$dummyWOSrelrank==w & floweringMAT$mating2==m ])   ))
+	fxtxDse[[5]] <-  sapply(matypes, function(m)  sapply(wosdfM, function(w)  std.error(floweringMAT$isDelayOrExp[floweringMAT$dummyWOSrelrank==w & floweringMAT$mating2==m ])   ))
+	flwrD.m <- unlist(lapply(1:length(fxtxD), function(type) colMeans(fxtxD[[type]],na.rm=T)))
+	flwrD.se <-unlist(lapply(1:length(fxtxDse), function(type)  sapply(1:ncol(fxtxDse[[type]]), function(m) mean(fxtxDse[[type]][,m],na.rm=T))))
+	flwrD.m <-  c(flwrD.m, mean(flowering$isDelayOrExp))
+	flwrD.se <-  c(flwrD.se, std.error(flowering$isDelayOrExp))
+gTxtxD <- lapply(1:length(typelist), function(type) sapply(typelist[[type]], function(m)  sapply(wosdf, function(w)  mean(germtime$isDelayOrExp[germtime$dummyWOSrelrank==w & germtime[,which(colnames(germtime)==cols[type])]==m] )   )))
+gTxtxDse <- lapply(1:length(typelist), function(type) sapply(typelist[[type]], function(m)  sapply(wosdf, function(w)  std.error(germtime$isDelayOrExp[germtime$dummyWOSrelrank==w & germtime[,which(colnames(germtime)==cols[type])]==m] )   )))
+	gTxtxD[[5]] <-  sapply(matypes, function(m)  sapply(wosdgtM, function(w)  mean(germtimeMAT$isDelayOrExp[germtimeMAT$dummyWOSrelrank==w & germtimeMAT$mating2==m ])   ))
+	gTxtxDse[[5]] <-  sapply(matypes, function(m)  sapply(wosdgtM, function(w)  std.error(germtimeMAT$isDelayOrExp[germtimeMAT$dummyWOSrelrank==w & germtimeMAT$mating2==m ])   ))
+	germTD.m <- unlist(lapply(1:length(gTxtxD), function(type) colMeans(gTxtxD[[type]],na.rm=T)))
+	germTD.se <-unlist(lapply(1:length(gTxtxDse), function(type)  sapply(1:ncol(gTxtxDse[[type]]), function(m) mean(gTxtxDse[[type]][,m],na.rm=T))))
+	germTD.m <-  c(germTD.m, mean(germtime$isDelayOrExp))
+	germTD.se <-  c(germTD.se, std.error(germtime$isDelayOrExp))
+gPxtxD <- lapply(1:length(typelist), function(type) sapply(typelist[[type]], function(m)  sapply(wosdf, function(w)  mean(germprb$isDelayOrExp[germprb$dummyWOSrelrank==w & germprb[,which(colnames(germprb)==cols[type])]==m] )   )))
+gPxtxDse <- lapply(1:length(typelist), function(type) sapply(typelist[[type]], function(m)  sapply(wosdf, function(w)  std.error(germprb$isDelayOrExp[germprb$dummyWOSrelrank==w & germprb[,which(colnames(germprb)==cols[type])]==m] )   )))
+	gPxtxD[[5]] <-  sapply(matypes, function(m)  sapply(wosdgpM, function(w)  mean(germprbMAT$isDelayOrExp[germprbMAT$dummyWOSrelrank==w & germprbMAT$mating2==m ])   ))
+	gPxtxDse[[5]] <-  sapply(matypes, function(m)  sapply(wosdgpM, function(w)  std.error(germprbMAT$isDelayOrExp[germprbMAT$dummyWOSrelrank==w & germprbMAT$mating2==m ])   ))
+	germPD.m <- unlist(lapply(1:length(gPxtxD), function(type) colMeans(gPxtxD[[type]],na.rm=T)))
+	germPD.se <-unlist(lapply(1:length(gPxtxDse), function(type)  sapply(1:ncol(gPxtxDse[[type]]), function(m) mean(gPxtxDse[[type]][,m],na.rm=T))))
+	germPD.m <-  c(germPD.m, mean(germprb$isDelayOrExp))
+	germPD.se <-  c(germPD.se, std.error(germprb$isDelayOrExp))
+
+#fill in from model results
+siggroupsFE <- c( "a","ab","ab","b",#tax
+				"","","",#scom
+				"a","ab","b",#lh #all ns if 0.95
+				"a","b","b","ab","ab", #loc
+				"","", ""	) #mat
+siggroupsFD <- c("b","ab","a","ab",#tax
+				"a","b","b",#scom;  looks backwards!
+				"","","",#lh
+				"a","b","a","a","a", #loc
+				"","", ""	) #mat
+siggroupsGtE <- c( "b","a","c","b",#tax  #at .95; other fungi can'd be dist from mixed
+				"","","",#scom
+				"b","ab","a",#lh
+				"","","","","", #loc
+				"","", ""	) #mat
+siggroupsGtD <- c( "b","c","a","a",#tax
+				"a","b","b",#scom #
+				"","","",#lh
+				"a","a","b","a","b",#loc
+				"","", ""	) #mat
+siggroupsGpE <- c( "b","c","a","a",#tax
+				"a","ab","b",
+				"","","",#lh
+				"a","a","b","a","ab", #loc
+				"","", ""	) #mat
+siggroupsGpD <- c( "b","a","bc","c",#tax
+				"b","b","a",#scom
+				"","","",#lh
+				"a","a","b","a","a", #loc
+				"b","a", ""	) #mat & bonus; mat looks backwards
 
 pdf("means_ses_and prelim fitted diffs from binom.pdf",height=6,width=5)
 xvals <- c(seq(from=0,to=1,length.out=c(4+3+2+3+5+1) ))
-# xlab <- c("B","MF","MX","OF","B","MF","MX","OF","R","cltr","dir","rm","str","strs","com","out","os","self","unk","ann","b","per")
-xlab <- c("bacteria","myc fungi","mixed","other fungi","community","strain","strain mix","outcrosser","selfer","annual","both","perennial","root","seed","shoot","v. w/ reprod","v. w/o reprod","All")
+xlab <- c("bacteria","myc fungi","mixed","other fungi","community","strain","strain mix","annual","both","perennial","root","seed","shoot","v. w/ reprod","v. w/o reprod","outcrosser","selfer","All")
 par(mfrow=c(3,1))
 par(mar=c(1,0,1,0))
-par(oma=c(5,4,1,1))
+par(oma=c(5,4,1,1))####NOTE THAT SOME OF THESE ARE ONLY SIG AT 0.9
 plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.2,1.2),yaxt="n")
-	points(earlyFmns[[1]]~xvals[1:4]  ,pch=16:20); 	points(delayFmns[[1]]~I(xvals[1:4] +0.01 ),pch=16:20,col="gray")
-	arrows(x0=xvals[1:4] , y0=earlyFmns[[1]] -earlyFses[[1]], y1 = earlyFmns[[1]] +earlyFses[[1]],length=0     )
-	arrows(x0=xvals[1:4]+0.01 , y0=delayFmns[[1]] -delayFses[[1]], y1 = delayFmns[[1]] +delayFses[[1]],length=0  ,col="gray"   )
-	abline(v= sum(xvals[4:5])/2,lty=3 )
-	text(x=xvals[1:4] ,y=-0.2,c("a","a","ab","b"))
-	text(x=xvals[1:4] ,y=1.2,c("b","ab","a","ab"),col="gray")
-	points(earlyFmns[[2]]~xvals[5:7]  ,pch=16:20); 		points(delayFmns[[2]]~I(xvals[5:7] +0.01)  ,pch=16:20,col="gray")
-	arrows(x0=xvals[5:7] , y0=earlyFmns[[2]] -earlyFses[[2]], y1 = earlyFmns[[2]] +earlyFses[[2]],length=0     )
-	arrows(x0=xvals[5:7] + 0.01, y0=delayFmns[[2]] -delayFses[[2]], y1 = delayFmns[[2]] +delayFses[[2]],length=0 ,col="gray"    )
-	text(x=xvals[5:7] ,y=-0.2,c("b","ab","a")) #
-	text(x=xvals[5:7] ,y=1.2,c("a","b","b"),col="gray")#NOTE THIS PREDICTION LOOKS REVERSED
-	abline(v= sum(xvals[7:8])/2,lty=3 )
-	points(earlyFmns[[3]]~xvals[8:9]  ,pch=16:20); 	points(delayFmns[[3]]~I(xvals[8:9] +0.01) ,pch=16:20, col="gray")
-	arrows(x0=xvals[8:9] , y0=earlyFmns[[3]] -earlyFses[[3]], y1 = earlyFmns[[3]] +earlyFses[[3]],length=0     )
-	arrows(x0=xvals[8:9]+0.01 , y0=delayFmns[[3]] -delayFses[[3]], y1 = delayFmns[[3]] +delayFses[[3]],length=0 ,col="gray"    )
-	text(x=xvals[8:9] ,y=-0.2,c(" "," "))
-	text(x=xvals[8:9] ,y=1.2,c(" "," "),col="gray")
-	abline(v= sum(xvals[9:10])/2,lty=3 )
-	points(earlyFmns[[4]]~xvals[10:12]  ,pch=16:20); 	points(delayFmns[[4]]~I(xvals[10:12]+0.01)  ,pch=16:21,col="gray")
-	arrows(x0=xvals[10:12] , y0=earlyFmns[[4]] -earlyFses[[4]], y1 = earlyFmns[[4]] +earlyFses[[4]],length=0     )
-	arrows(x0=xvals[10:12]+0.01 , y0=delayFmns[[4]] -delayFses[[4]], y1 = delayFmns[[4]] +delayFses[[4]],length=0 ,col="gray"    )
-	text(x=xvals[10:12] ,y=-0.2,c("a","ab","b"))
-	text(x=xvals[10:12] ,y=1.2,c(" "," "," "),col="gray")
-	abline(v= sum(xvals[12:13])/2,lty=3 )
-	points(earlyFmns[[5]]~xvals[13:17]  ,pch=16:20); 	points(delayFmns[[5]]~I(xvals[13:17]+0.01)  ,pch=16:20,col="gray")
-	arrows(x0=xvals[13:17] , y0=earlyFmns[[5]] -earlyFses[[5]], y1 = earlyFmns[[5]] +earlyFses[[5]],length=0     )
-	arrows(x0=xvals[13:17] +0.01, y0=delayFmns[[5]] -delayFses[[5]], y1 = delayFmns[[5]] +delayFses[[5]],length=0 ,col="gray"    )
-	text(x=xvals[13:17] ,y=-0.2,c("a","b","b","b","ab"))
-	text(x=xvals[13:17] ,y=1.2,c("a","b","ab","ab","ab"),col="gray")
-	abline(v= sum(xvals[17:18])/2,lty=3 )
-	points(earlyFmns[[6]]~xvals[18]  ,pch=16:20); 	points(delayFmns[[6]]~I(xvals[18]+0.01)  ,pch=16:20,col="gray")
-	arrows(x0=xvals[18] , y0=earlyFmns[[6]] -earlyFses[[6]], y1 = earlyFmns[[6]] +earlyFses[[6]],length=0     )
-	arrows(x0=xvals[18] +0.01, y0=delayFmns[[6]] -delayFses[[6]], y1 = delayFmns[[6]] +delayFses[[6]],length=0 ,col="gray"    )
+	points(unlist(flwrE.m)~xvals,pch=16)
+	points(unlist(flwrD.m)~I(xvals+0.01),pch=16,col="gray")
+	arrows(x0=xvals , y0=flwrE.m -flwrE.se, y1 = flwrE.m +flwrE.se,length=0     )
+	arrows(x0=xvals+0.01 , y0=flwrD.m -flwrD.se, y1 = flwrD.m +flwrD.se,length=0  ,col="gray"   )
+	abline(v= c(sum(xvals[4:5])/2, sum(xvals[7:8])/2, sum(xvals[10:11])/2, 
+				sum(xvals[15:16])/2, sum(xvals[17:18])/2 ),lty=3 )
+	text(xvals,y=1.2,siggroupsFE)
+	text(xvals,y=-0.2,siggroupsFD,col="gray")
 	mtext(side=3,"flowering time")
-# 	mtext(side=2,"Prb of observing Effect",line=2)
 	axis(side=2,at=c(0,0.25,0.5,0.75,1),labels=c(0," ",0.5, " ",1))
-legend(xvals[13],y=1.2,c("Earlier","Delay"),fill=c("black","gray"),bty="n")
+legend(xvals[12],y=1.2,c("Earlier","Delay"),fill=c("black","gray"),bty="n")
 plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.2,1.2),yaxt="n")
-	points(earlyGmns[[1]]~xvals[1:4]  ,pch=16:20); 	points(delayGmns[[1]]~I(xvals[1:4] +0.01 ),pch=16:20,col="gray")
-	arrows(x0=xvals[1:4] , y0=earlyGmns[[1]] -earlyGses[[1]], y1 = earlyGmns[[1]] +earlyGses[[1]],length=0     )
-	arrows(x0=xvals[1:4]+0.01 , y0=delayGmns[[1]] -delayGses[[1]], y1 = delayGmns[[1]] +delayGses[[1]],length=0  ,col="gray"   )
-	abline(v= sum(xvals[4:5])/2,lty=3 )
-	text(x=xvals[1:4] ,y=-0.2,c("b","a","c","bc"))
-	text(x=xvals[1:4] ,y=1.2,c("b","c","a","a"),col="gray")
-	points(earlyGmns[[2]]~xvals[5:7]  ,pch=16:20); 		points(delayGmns[[2]]~I(xvals[5:7] +0.01)  ,pch=16:20,col="gray")
-	arrows(x0=xvals[5:7] , y0=earlyGmns[[2]] -earlyGses[[2]], y1 = earlyGmns[[2]] +earlyGses[[2]],length=0     )
-	arrows(x0=xvals[5:7] + 0.01, y0=delayGmns[[2]] -delayGses[[2]], y1 = delayGmns[[2]] +delayGses[[2]],length=0 ,col="gray"    )
-	text(x=xvals[5:7] ,y=-0.2,c(" "," "," "))
-	text(x=xvals[5:7] ,y=1.2,c("a","b"," b"),col="gray")
-	abline(v= sum(xvals[7:8])/2,lty=3 )
-	points(earlyGmns[[3]]~xvals[8:9]  ,pch=16:20); 	points(delayGmns[[3]]~I(xvals[8:9] +0.01) ,pch=16:20, col="gray")
-	arrows(x0=xvals[8:9] , y0=earlyGmns[[3]] -earlyGses[[3]], y1 = earlyGmns[[3]] +earlyGses[[3]],length=0     )
-	arrows(x0=xvals[8:9]+0.01 , y0=delayGmns[[3]] -delayGses[[3]], y1 = delayGmns[[3]] +delayGses[[3]],length=0 ,col="gray"    )
-	text(x=xvals[8:9] ,y=-0.2,c(" "," "))
-	text(x=xvals[8:9] ,y=1.2,c(" "," "),col="gray")
-	abline(v= sum(xvals[9:10])/2,lty=3 )
-	points(earlyGmns[[4]]~xvals[10:12]  ,pch=16:20); 	points(delayGmns[[4]]~I(xvals[10:12]+0.01)  ,pch=16:21,col="gray")
-	arrows(x0=xvals[10:12] , y0=earlyGmns[[4]] -earlyGses[[4]], y1 = earlyGmns[[4]] +earlyGses[[4]],length=0     )
-	arrows(x0=xvals[10:12]+0.01 , y0=delayGmns[[4]] -delayGses[[4]], y1 = delayGmns[[4]] +delayGses[[4]],length=0 ,col="gray"    )
-	text(x=xvals[10:12] ,y=-0.2,c("b","ab","a"))
-	text(x=xvals[10:12] ,y=1.2,c("a","ab","b"),col="gray")
-	abline(v= sum(xvals[12:13])/2,lty=3 )
-	points(earlyGmns[[5]]~xvals[13:17]  ,pch=16:20); 	points(delayGmns[[5]]~I(xvals[13:17]+0.01)  ,pch=16:20,col="gray")
-	arrows(x0=xvals[13:17] , y0=earlyGmns[[5]] -earlyGses[[5]], y1 = earlyGmns[[5]] +earlyGses[[5]],length=0     )
-	arrows(x0=xvals[13:17] +0.01, y0=delayGmns[[5]] -delayGses[[5]], y1 = delayGmns[[5]] +delayGses[[5]],length=0 ,col="gray"    )
-	text(x=xvals[13:17] ,y=-0.2,c(" "," "," "," "," "))
-	text(x=xvals[13:17] ,y=1.2,c("a","a","b","a","b"),col="gray")
-	abline(v= sum(xvals[17:18])/2,lty=3 )
-	points(earlyGmns[[6]]~xvals[18]  ,pch=16:20); 	points(delayGmns[[6]]~I(xvals[18]+0.01)  ,pch=16:20,col="gray")
-	arrows(x0=xvals[18] , y0=earlyGmns[[6]] -earlyGses[[6]], y1 = earlyGmns[[6]] +earlyGses[[6]],length=0     )
-	arrows(x0=xvals[18] +0.01, y0=delayGmns[[6]] -delayGses[[6]], y1 = delayGmns[[6]] +delayGses[[6]],length=0 ,col="gray"    )
+	points(unlist(germTE.m)~xvals,pch=16)
+	points(unlist(germTD.m)~I(xvals+0.01),pch=16,col="gray")
+	arrows(x0=xvals , y0=germTE.m -germTE.se, y1 = germTE.m +germTE.se,length=0     )
+	arrows(x0=xvals+0.01 , y0=germTD.m -germTD.se, y1 = germTD.m +germTD.se,length=0  ,col="gray"   )
+	abline(v= c(sum(xvals[4:5])/2, sum(xvals[7:8])/2, sum(xvals[10:11])/2, 
+				sum(xvals[15:16])/2, sum(xvals[17:18])/2 ),lty=3 )
+	text(xvals,y=1.2,siggroupsGtE)
+	text(xvals,y=-0.2,siggroupsGtD,col="gray")
 	mtext(side=3,"germination time")
 	mtext(side=2,"Prb of observing Effect",line=2)
 	axis(side=2,at=c(0,0.25,0.5,0.75,1),labels=c(0," ",0.5, " ",1))
-legend(xvals[13],y=1.2,c("Earlier","Delay"),fill=c("black","gray"),bty="n")
+legend(xvals[12],y=1.2,c("Earlier","Delay"),fill=c("black","gray"),bty="n")
 plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.2,1.2),yaxt="n")
-	points(earlyGPmns[[1]]~xvals[1:4]  ,pch=16:20); 	points(delayGPmns[[1]]~I(xvals[1:4] +0.01 ),pch=16:20,col="gray")
-	arrows(x0=xvals[1:4] , y0=earlyGPmns[[1]] -earlyGPses[[1]], y1 = earlyGPmns[[1]] +earlyGPses[[1]],length=0     )
-	arrows(x0=xvals[1:4]+0.01 , y0=delayGPmns[[1]] -delayGPses[[1]], y1 = delayGPmns[[1]] +delayGPses[[1]],length=0  ,col="gray"   )
-	abline(v= sum(xvals[4:5])/2,lty=3 )
-	text(x=xvals[1:4] ,y=-0.2,c("b","c","a","a"))
-	text(x=xvals[1:4] ,y=1.2,c("b","a","bc","c"),col="gray")
-	points(earlyGPmns[[2]]~xvals[5:7]  ,pch=16:20); 		points(delayGPmns[[2]]~I(xvals[5:7] +0.01)  ,pch=16:20,col="gray")
-	arrows(x0=xvals[5:7] , y0=earlyGPmns[[2]] -earlyGPses[[2]], y1 = earlyGPmns[[2]] +earlyGPses[[2]],length=0     )
-	arrows(x0=xvals[5:7] + 0.01, y0=delayGPmns[[2]] -delayGPses[[2]], y1 = delayGPmns[[2]] +delayGPses[[2]],length=0 ,col="gray"    )
-	text(x=xvals[5:7] ,y=-0.2,c("a","a","b")) 
-	text(x=xvals[5:7] ,y=1.2,c("b","b","a"),col="gray")
-	abline(v= sum(xvals[7:8])/2,lty=3 )
-	points(earlyGPmns[[3]]~xvals[8:9]  ,pch=16:20); 	points(delayGPmns[[3]]~I(xvals[8:9] +0.01) ,pch=16:20, col="gray")
-	arrows(x0=xvals[8:9] , y0=earlyGPmns[[3]] -earlyGPses[[3]], y1 = earlyGPmns[[3]] +earlyGPses[[3]],length=0     )
-	arrows(x0=xvals[8:9]+0.01 , y0=delayGPmns[[3]] -delayGPses[[3]], y1 = delayGPmns[[3]] +delayGPses[[3]],length=0 ,col="gray"    )
-	text(x=xvals[8:9] ,y=-0.2,c(" "," "))
-	text(x=xvals[8:9] ,y=1.2,c("b","a"),col="gray")
-	abline(v= sum(xvals[9:10])/2,lty=3 )
-	points(earlyGPmns[[4]]~xvals[10:12]  ,pch=16:20); 	points(delayGPmns[[4]]~I(xvals[10:12]+0.01)  ,pch=16:21,col="gray")
-	arrows(x0=xvals[10:12] , y0=earlyGPmns[[4]] -earlyGPses[[4]], y1 = earlyGPmns[[4]] +earlyGPses[[4]],length=0     )
-	arrows(x0=xvals[10:12]+0.01 , y0=delayGPmns[[4]] -delayGPses[[4]], y1 = delayGPmns[[4]] +delayGPses[[4]],length=0 ,col="gray"    )
-	text(x=xvals[10:12] ,y=-0.2,c(" "," "," "))
-	text(x=xvals[10:12] ,y=1.2,c("b","ab","a"),col="gray")#THIS ONE ALSO LOOKS REVERSED
-	abline(v= sum(xvals[12:13])/2,lty=3 )
-	points(earlyGPmns[[5]]~xvals[13:17]  ,pch=16:20); 	points(delayGPmns[[5]]~I(xvals[13:17]+0.01)  ,pch=16:20,col="gray")
-	arrows(x0=xvals[13:17] , y0=earlyGPmns[[5]] -earlyGPses[[5]], y1 = earlyGPmns[[5]] +earlyGPses[[5]],length=0     )
-	arrows(x0=xvals[13:17] +0.01, y0=delayGPmns[[5]] -delayGPses[[5]], y1 = delayGPmns[[5]] +delayGPses[[5]],length=0 ,col="gray"    )
-	text(x=xvals[13:17] ,y=-0.2,c("a","a","b","a","a"))
-	text(x=xvals[13:17] ,y=1.2,c("a","a","b","a","a"),col="gray")
-	abline(v= sum(xvals[17:18])/2,lty=3 )
-	points(earlyGPmns[[6]]~xvals[18]  ,pch=16:20); 	points(delayGPmns[[6]]~I(xvals[18]+0.01)  ,pch=16:20,col="gray")
-	arrows(x0=xvals[18] , y0=earlyGPmns[[6]] -earlyGPses[[6]], y1 = earlyGPmns[[6]] +earlyGPses[[6]],length=0     )
-	arrows(x0=xvals[18] +0.01, y0=delayGPmns[[6]] -delayGPses[[6]], y1 = delayGPmns[[6]] +delayGPses[[6]],length=0 ,col="gray"    )
+	points(unlist(germPE.m)~xvals,pch=16)
+	points(unlist(germPD.m)~I(xvals+0.01),pch=16,col="gray")
+	arrows(x0=xvals , y0=germPE.m -germPE.se, y1 = germPE.m +germPE.se,length=0     )
+	arrows(x0=xvals+0.01 , y0=germPD.m -germPD.se, y1 = germPD.m +germPD.se,length=0  ,col="gray"   )
+	abline(v= c(sum(xvals[4:5])/2, sum(xvals[7:8])/2, sum(xvals[10:11])/2, 
+				sum(xvals[15:16])/2, sum(xvals[17:18])/2 ),lty=3 )
+	text(xvals,y=1.2,siggroupsGpE)
+	text(xvals,y=-0.2,siggroupsGpD,col="gray")
 	mtext(side=3,"germination probability")
-# 	mtext(side=2,"Prb of observing Effect",line=2)
 	axis(side=2,at=c(0,0.25,0.5,0.75,1),labels=c(0," ",0.5, " ",1))
-legend(xvals[13],y=1.2,c("Narrowed","Expanded"),fill=c("black","gray"),bty="n")
+legend(xvals[12],y=1.2,c("Narrowed","Expanded"),fill=c("black","gray"),bty="n")
 axis(side=1,at=xvals, labels=xlab,las=2)
 dev.off()
+
+
+
 
 
 
@@ -680,9 +665,181 @@ dev.off()
 # 1-pnorm(cp[1]-l)
 
 
+# earlyFmns <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
+# 		 function(z) tapply(flowering$isEarlyOrNrw,flowering[,colnames(flowering)==z],mean,na.rm=T) )
+# 	earlyFmns[[3]] <- tapply(floweringMAT$isEarlyOrNrw,floweringMAT[,colnames(floweringMAT)=="mating2"],mean,na.rm=T)
+# 	earlyFmns[[6]] <- mean(floweringMAT$isEarlyOrNrw)
+# earlyFses <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
+# 		 function(z) tapply(flowering$isEarlyOrNrw,flowering[,colnames(flowering)==z],std.error) )
+# 	earlyFses[[3]] <- tapply(floweringMAT$isEarlyOrNrw,floweringMAT[,colnames(floweringMAT)=="mating2"],std.error)
+# 	earlyFses[[6]] <- std.error(floweringMAT$isEarlyOrNrw)
+# delayFmns <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
+# 		 function(z) tapply(flowering$isDelayOrExp,flowering[,colnames(flowering)==z],mean,na.rm=T) )
+# 	delayFmns[[3]] <- tapply(floweringMAT$isDelayOrExp,floweringMAT[,colnames(floweringMAT)=="mating2"],mean,na.rm=T)
+# 	delayFmns[[6]] <- mean(floweringMAT$isDelayOrExp)
+# delayFses <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
+# 		 function(z) tapply(flowering$isDelayOrExp,flowering[,colnames(flowering)==z],std.error) )
+# 	delayFses[[3]] <- tapply(floweringMAT$isDelayOrExp,floweringMAT[,colnames(floweringMAT)=="mating2"],std.error)
+# 	delayFses[[6]] <- std.error(floweringMAT$isDelayOrExp)
+# 
+# earlyGmns <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
+# 		 function(z) tapply(germtime$isEarlyOrNrw,germtime[,colnames(germtime)==z],mean,na.rm=T) )
+# 	earlyGmns[[3]] <- tapply(germtimeMAT$isEarlyOrNrw,germtimeMAT[,colnames(germtimeMAT)=="mating2"],mean,na.rm=T) 
+# 	earlyGmns[[6]] <- mean(germtime$isEarlyOrNrw)
+# earlyGses <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
+# 		 function(z) tapply(germtime$isEarlyOrNrw,germtime[,colnames(germtime)==z],std.error) )
+# 	earlyGses[[3]] <- tapply(germtimeMAT$isEarlyOrNrw,germtimeMAT[,colnames(germtimeMAT)=="mating2"],std.error)
+# 	earlyGses[[6]] <- std.error(germtime$isEarlyOrNrw)
+# delayGmns <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
+# 		 function(z) tapply(germtime$isDelayOrExp,germtime[,colnames(germtime)==z],mean,na.rm=T) )
+# 	delayGmns[[3]] <- tapply(germtimeMAT$isDelayOrExp,germtimeMAT[,colnames(germtimeMAT)=="mating2"],mean,na.rm=T) 
+# 	delayGmns[[6]] <- mean(germtime$isDelayOrExp)
+# delayGses <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
+# 		 function(z) tapply(germtime$isDelayOrExp,germtime[,colnames(germtime)==z],std.error) )
+# 	delayGses[[3]] <- tapply(germtimeMAT$isDelayOrExp,germtimeMAT[,colnames(germtimeMAT)=="mating2"],std.error)
+# 	delayGses[[6]] <- std.error(germtime$isDelayOrExp)
+# 
+# earlyGPmns <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
+# 		 function(z) tapply(germprb$isEarlyOrNrw,germprb[,colnames(germprb)==z],mean,na.rm=T) )
+# 	earlyGPmns[[3]] <- tapply(germprbMAT$isEarlyOrNrw,germprbMAT[,colnames(germprbMAT)=="mating2"],mean,na.rm=T)
+# 	earlyGPmns[[6]] <- mean(germprb$isEarlyOrNrw)
+# earlyGPses <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
+# 		 function(z) tapply(germprb$isEarlyOrNrw,germprb[,colnames(germprb)==z],std.error) )
+# 	earlyGPses[[3]] <- tapply(germprbMAT$isEarlyOrNrw,germprbMAT[,colnames(germprbMAT)=="mating2"],std.error)
+# 	earlyGPses[[6]] <- std.error(germprb$isEarlyOrNrw)
+# delayGPmns <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
+# 		 function(z) tapply(germprb$isDelayOrExp,germprb[,colnames(germprb)==z],mean,na.rm=T) )
+# 	delayGPmns[[3]] <- tapply(germprbMAT$isDelayOrExp,germprbMAT[,colnames(germprbMAT)=="mating2"],mean,na.rm=T)
+# 	delayGPmns[[6]] <- mean(germprb$isDelayOrExp)
+# delayGPses <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
+# 		 function(z) tapply(germprb$isDelayOrExp,germprb[,colnames(germprb)==z],std.error) )
+# 	delayGPses[[3]] <- tapply(germprbMAT$isDelayOrExp,germprbMAT[,colnames(germprbMAT)=="mating2"],std.error)
+# 	delayGPses[[6]] <- std.error(germprb$isDelayOrExp)
+# 
+# 
+# 
 
-
-
+# xvals <- c(seq(from=0,to=1,length.out=c(4+3+2+3+5+1) ))
+# # xlab <- c("B","MF","MX","OF","B","MF","MX","OF","R","cltr","dir","rm","str","strs","com","out","os","self","unk","ann","b","per")
+# xlab <- c("bacteria","myc fungi","mixed","other fungi","community","strain","strain mix","annual","both","perennial","root","seed","shoot","v. w/ reprod","v. w/o reprod","outcrosser","selfer","All")
+# par(mfrow=c(3,1))
+# par(mar=c(1,0,1,0))
+# par(oma=c(5,4,1,1))####NOTE THAT SOME OF THESE ARE ONLY SIG AT 0.9
+# plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.2,1.2),yaxt="n")
+# 	points(earlyFmns[[1]]~xvals[1:4]  ,pch=16:20); 	points(delayFmns[[1]]~I(xvals[1:4] +0.01 ),pch=16:20,col="gray")
+# 	arrows(x0=xvals[1:4] , y0=earlyFmns[[1]] -earlyFses[[1]], y1 = earlyFmns[[1]] +earlyFses[[1]],length=0     )
+# 	arrows(x0=xvals[1:4]+0.01 , y0=delayFmns[[1]] -delayFses[[1]], y1 = delayFmns[[1]] +delayFses[[1]],length=0  ,col="gray"   )
+# 	abline(v= sum(xvals[4:5])/2,lty=3 )
+# 	text(x=xvals[1:4] ,y=-0.2,c("a","a","ab","b"))#at 0.95 level MF are also ab.
+# 	text(x=xvals[1:4] ,y=1.2,c("b","ab","a","ab"),col="gray") #
+# 	points(earlyFmns[[2]]~xvals[5:7]  ,pch=16:20); 		points(delayFmns[[2]]~I(xvals[5:7] +0.01)  ,pch=16:20,col="gray")
+# 	arrows(x0=xvals[5:7] , y0=earlyFmns[[2]] -earlyFses[[2]], y1 = earlyFmns[[2]] +earlyFses[[2]],length=0     )
+# 	arrows(x0=xvals[5:7] + 0.01, y0=delayFmns[[2]] -delayFses[[2]], y1 = delayFmns[[2]] +delayFses[[2]],length=0 ,col="gray"    )
+# 	text(x=xvals[5:7] ,y=-0.2, c("","",""))#c("b","ab","a")) #
+# 	text(x=xvals[5:7] ,y=1.2,c("a","b","b"),col="gray")#NOTE THIS PREDICTION LOOKS REVERSED
+# 	abline(v= sum(xvals[7:8])/2,lty=3 )
+# 	points(earlyFmns[[3]]~xvals[8:9]  ,pch=16:20); 	points(delayFmns[[3]]~I(xvals[8:9] +0.01) ,pch=16:20, col="gray")
+# 	arrows(x0=xvals[8:9] , y0=earlyFmns[[3]] -earlyFses[[3]], y1 = earlyFmns[[3]] +earlyFses[[3]],length=0     )
+# 	arrows(x0=xvals[8:9]+0.01 , y0=delayFmns[[3]] -delayFses[[3]], y1 = delayFmns[[3]] +delayFses[[3]],length=0 ,col="gray"    )
+# 	text(x=xvals[8:9] ,y=-0.2,c(" "," "))
+# 	text(x=xvals[8:9] ,y=1.2,c("b","a"),col="gray")#only at 0.9 level
+# 	abline(v= sum(xvals[9:10])/2,lty=3 )
+# 	points(earlyFmns[[4]]~xvals[10:12]  ,pch=16:20); 	points(delayFmns[[4]]~I(xvals[10:12]+0.01)  ,pch=16:21,col="gray")
+# 	arrows(x0=xvals[10:12] , y0=earlyFmns[[4]] -earlyFses[[4]], y1 = earlyFmns[[4]] +earlyFses[[4]],length=0     )
+# 	arrows(x0=xvals[10:12]+0.01 , y0=delayFmns[[4]] -delayFses[[4]], y1 = delayFmns[[4]] +delayFses[[4]],length=0 ,col="gray"    )
+# 	text(x=xvals[10:12] ,y=-0.2,c("a","ab","b"))
+# 	text(x=xvals[10:12] ,y=1.2,c(" "," "," "),col="gray")
+# 	abline(v= sum(xvals[12:13])/2,lty=3 )
+# 	points(earlyFmns[[5]]~xvals[13:17]  ,pch=16:20); 	points(delayFmns[[5]]~I(xvals[13:17]+0.01)  ,pch=16:20,col="gray")
+# 	arrows(x0=xvals[13:17] , y0=earlyFmns[[5]] -earlyFses[[5]], y1 = earlyFmns[[5]] +earlyFses[[5]],length=0     )
+# 	arrows(x0=xvals[13:17] +0.01, y0=delayFmns[[5]] -delayFses[[5]], y1 = delayFmns[[5]] +delayFses[[5]],length=0 ,col="gray"    )
+# 	text(x=xvals[13:17] ,y=-0.2,c("a","b","b","ab","ab"))#
+# 	text(x=xvals[13:17] ,y=1.2,c("a","b","a","a","a"),col="gray")
+# 	abline(v= sum(xvals[17:18])/2,lty=3 )
+# 	points(earlyFmns[[6]]~xvals[18]  ,pch=16:20); 	points(delayFmns[[6]]~I(xvals[18]+0.01)  ,pch=16:20,col="gray")
+# 	arrows(x0=xvals[18] , y0=earlyFmns[[6]] -earlyFses[[6]], y1 = earlyFmns[[6]] +earlyFses[[6]],length=0     )
+# 	arrows(x0=xvals[18] +0.01, y0=delayFmns[[6]] -delayFses[[6]], y1 = delayFmns[[6]] +delayFses[[6]],length=0 ,col="gray"    )
+# 	mtext(side=3,"flowering time")
+# # 	mtext(side=2,"Prb of observing Effect",line=2)
+# 	axis(side=2,at=c(0,0.25,0.5,0.75,1),labels=c(0," ",0.5, " ",1))
+# legend(xvals[13],y=1.2,c("Earlier","Delay"),fill=c("black","gray"),bty="n")
+# plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.2,1.2),yaxt="n")
+# 	points(earlyGmns[[1]]~xvals[1:4]  ,pch=16:20); 	points(delayGmns[[1]]~I(xvals[1:4] +0.01 ),pch=16:20,col="gray")
+# 	arrows(x0=xvals[1:4] , y0=earlyGmns[[1]] -earlyGses[[1]], y1 = earlyGmns[[1]] +earlyGses[[1]],length=0     )
+# 	arrows(x0=xvals[1:4]+0.01 , y0=delayGmns[[1]] -delayGses[[1]], y1 = delayGmns[[1]] +delayGses[[1]],length=0  ,col="gray"   )
+# 	abline(v= sum(xvals[4:5])/2,lty=3 )
+# 	text(x=xvals[1:4] ,y=-0.2,c("b","a","c","b"))#other fungi are bc at .95 interval
+# 	text(x=xvals[1:4] ,y=1.2,c("b","c","a","a"),col="gray") #confidence intervals do no match p values well...
+# 	points(earlyGmns[[2]]~xvals[5:7]  ,pch=16:20); 		points(delayGmns[[2]]~I(xvals[5:7] +0.01)  ,pch=16:20,col="gray")
+# 	arrows(x0=xvals[5:7] , y0=earlyGmns[[2]] -earlyGses[[2]], y1 = earlyGmns[[2]] +earlyGses[[2]],length=0     )
+# 	arrows(x0=xvals[5:7] + 0.01, y0=delayGmns[[2]] -delayGses[[2]], y1 = delayGmns[[2]] +delayGses[[2]],length=0 ,col="gray"    )
+# 	text(x=xvals[5:7] ,y=-0.2,c(" "," "," "))
+# 	text(x=xvals[5:7] ,y=1.2,c("a","b"," b"),col="gray")
+# 	abline(v= sum(xvals[7:8])/2,lty=3 )
+# 	points(earlyGmns[[3]]~xvals[8:9]  ,pch=16:20); 	points(delayGmns[[3]]~I(xvals[8:9] +0.01) ,pch=16:20, col="gray")
+# 	arrows(x0=xvals[8:9] , y0=earlyGmns[[3]] -earlyGses[[3]], y1 = earlyGmns[[3]] +earlyGses[[3]],length=0     )
+# 	arrows(x0=xvals[8:9]+0.01 , y0=delayGmns[[3]] -delayGses[[3]], y1 = delayGmns[[3]] +delayGses[[3]],length=0 ,col="gray"    )
+# 	text(x=xvals[8:9] ,y=-0.2,c("b","a"))#at 0.9 level only
+# 	text(x=xvals[8:9] ,y=1.2,c(" "," "),col="gray")
+# 	abline(v= sum(xvals[9:10])/2,lty=3 )
+# 	points(earlyGmns[[4]]~xvals[10:12]  ,pch=16:20); 	points(delayGmns[[4]]~I(xvals[10:12]+0.01)  ,pch=16:21,col="gray")
+# 	arrows(x0=xvals[10:12] , y0=earlyGmns[[4]] -earlyGses[[4]], y1 = earlyGmns[[4]] +earlyGses[[4]],length=0     )
+# 	arrows(x0=xvals[10:12]+0.01 , y0=delayGmns[[4]] -delayGses[[4]], y1 = delayGmns[[4]] +delayGses[[4]],length=0 ,col="gray"    )
+# 	text(x=xvals[10:12] ,y=-0.2,c("b","ab","a"))
+# 	text(x=xvals[10:12] ,y=1.2,c("a","ab","b"),col="gray")
+# 	abline(v= sum(xvals[12:13])/2,lty=3 )
+# 	points(earlyGmns[[5]]~xvals[13:17]  ,pch=16:20); 	points(delayGmns[[5]]~I(xvals[13:17]+0.01)  ,pch=16:20,col="gray")
+# 	arrows(x0=xvals[13:17] , y0=earlyGmns[[5]] -earlyGses[[5]], y1 = earlyGmns[[5]] +earlyGses[[5]],length=0     )
+# 	arrows(x0=xvals[13:17] +0.01, y0=delayGmns[[5]] -delayGses[[5]], y1 = delayGmns[[5]] +delayGses[[5]],length=0 ,col="gray"    )
+# 	text(x=xvals[13:17] ,y=-0.2,c(" "," "," "," "," "))
+# 	text(x=xvals[13:17] ,y=1.2,c("b","abc","c","a","c"),col="gray") # at .95;  var incl reprod. is not diff from seed or root (a,ab,c,ab,cb)  old #c("a","a","b","a","b")
+# 	abline(v= sum(xvals[17:18])/2,lty=3 )
+# 	points(earlyGmns[[6]]~xvals[18]  ,pch=16:20); 	points(delayGmns[[6]]~I(xvals[18]+0.01)  ,pch=16:20,col="gray")
+# 	arrows(x0=xvals[18] , y0=earlyGmns[[6]] -earlyGses[[6]], y1 = earlyGmns[[6]] +earlyGses[[6]],length=0     )
+# 	arrows(x0=xvals[18] +0.01, y0=delayGmns[[6]] -delayGses[[6]], y1 = delayGmns[[6]] +delayGses[[6]],length=0 ,col="gray"    )
+# 	mtext(side=3,"germination time")
+# 	mtext(side=2,"Prb of observing Effect",line=2)
+# 	axis(side=2,at=c(0,0.25,0.5,0.75,1),labels=c(0," ",0.5, " ",1))
+# legend(xvals[13],y=1.2,c("Earlier","Delay"),fill=c("black","gray"),bty="n")
+# plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.2,1.2),yaxt="n")
+# 	points(earlyGPmns[[1]]~xvals[c(1,3:4)]  ,pch=16:20); 	points(delayGPmns[[1]]~I(xvals[c(1,3:4)] +0.01 ),pch=16:20,col="gray")
+# 	arrows(x0=xvals[c(1,3:4)] , y0=earlyGPmns[[1]] -earlyGPses[[1]], y1 = earlyGPmns[[1]] +earlyGPses[[1]],length=0     )
+# 	arrows(x0=xvals[c(1,3:4)]+0.01 , y0=delayGPmns[[1]] -delayGPses[[1]], y1 = delayGPmns[[1]] +delayGPses[[1]],length=0  ,col="gray"   )
+# 	abline(v= sum(xvals[4:5])/2,lty=3 )
+# 	text(x=xvals[1:4] ,y=-0.2,c("b"," ","c","a"))#doesnt have MF!
+# 	text(x=xvals[1:4] ,y=1.2,c("a"," ","b","b"),col="gray")#doesnt have MF!
+# 	points(earlyGPmns[[2]]~xvals[5:7]  ,pch=16:20); 		points(delayGPmns[[2]]~I(xvals[5:7] +0.01)  ,pch=16:20,col="gray")
+# 	arrows(x0=xvals[5:7] , y0=earlyGPmns[[2]] -earlyGPses[[2]], y1 = earlyGPmns[[2]] +earlyGPses[[2]],length=0     )
+# 	arrows(x0=xvals[5:7] + 0.01, y0=delayGPmns[[2]] -delayGPses[[2]], y1 = delayGPmns[[2]] +delayGPses[[2]],length=0 ,col="gray"    )
+# 	text(x=xvals[5:7] ,y=-0.2,c("a","a","b")) 
+# 	text(x=xvals[5:7] ,y=1.2,c("b","b","a"),col="gray")
+# 	abline(v= sum(xvals[7:8])/2,lty=3 )
+# 	points(earlyGPmns[[3]]~xvals[8:9]  ,pch=16:20); 	points(delayGPmns[[3]]~I(xvals[8:9] +0.01) ,pch=16:20, col="gray")
+# 	arrows(x0=xvals[8:9] , y0=earlyGPmns[[3]] -earlyGPses[[3]], y1 = earlyGPmns[[3]] +earlyGPses[[3]],length=0     )
+# 	arrows(x0=xvals[8:9]+0.01 , y0=delayGPmns[[3]] -delayGPses[[3]], y1 = delayGPmns[[3]] +delayGPses[[3]],length=0 ,col="gray"    )
+# 	text(x=xvals[8:9] ,y=-0.2,c(" "," "))
+# 	text(x=xvals[8:9] ,y=1.2,c("b","a"),col="gray")
+# 	abline(v= sum(xvals[9:10])/2,lty=3 )
+# 	points(earlyGPmns[[4]]~xvals[10:12]  ,pch=16:20); 	points(delayGPmns[[4]]~I(xvals[10:12]+0.01)  ,pch=16:21,col="gray")
+# 	arrows(x0=xvals[10:12] , y0=earlyGPmns[[4]] -earlyGPses[[4]], y1 = earlyGPmns[[4]] +earlyGPses[[4]],length=0     )
+# 	arrows(x0=xvals[10:12]+0.01 , y0=delayGPmns[[4]] -delayGPses[[4]], y1 = delayGPmns[[4]] +delayGPses[[4]],length=0 ,col="gray"    )
+# 	text(x=xvals[10:12] ,y=-0.2,c(" "," "," "))
+# 	text(x=xvals[10:12] ,y=1.2,c("b","ab","a"),col="gray")#THIS ONE ALSO LOOKS REVERSED
+# 	abline(v= sum(xvals[12:13])/2,lty=3 )
+# 	points(earlyGPmns[[5]]~xvals[13:17]  ,pch=16:20); 	points(delayGPmns[[5]]~I(xvals[13:17]+0.01)  ,pch=16:20,col="gray")
+# 	arrows(x0=xvals[13:17] , y0=earlyGPmns[[5]] -earlyGPses[[5]], y1 = earlyGPmns[[5]] +earlyGPses[[5]],length=0     )
+# 	arrows(x0=xvals[13:17] +0.01, y0=delayGPmns[[5]] -delayGPses[[5]], y1 = delayGPmns[[5]] +delayGPses[[5]],length=0 ,col="gray"    )
+# 	text(x=xvals[13:17] ,y=-0.2,c("a","a","b","a","a"))
+# 	text(x=xvals[13:17] ,y=1.2,c("a","a","b","a","a"),col="gray")
+# 	abline(v= sum(xvals[17:18])/2,lty=3 )
+# 	points(earlyGPmns[[6]]~xvals[18]  ,pch=16:20); 	points(delayGPmns[[6]]~I(xvals[18]+0.01)  ,pch=16:20,col="gray")
+# 	arrows(x0=xvals[18] , y0=earlyGPmns[[6]] -earlyGPses[[6]], y1 = earlyGPmns[[6]] +earlyGPses[[6]],length=0     )
+# 	arrows(x0=xvals[18] +0.01, y0=delayGPmns[[6]] -delayGPses[[6]], y1 = delayGPmns[[6]] +delayGPses[[6]],length=0 ,col="gray"    )
+# 	mtext(side=3,"germination probability")
+# # 	mtext(side=2,"Prb of observing Effect",line=2)
+# 	axis(side=2,at=c(0,0.25,0.5,0.75,1),labels=c(0," ",0.5, " ",1))
+# legend(xvals[13],y=1.2,c("Narrowed","Expanded"),fill=c("black","gray"),bty="n")
+# axis(side=1,at=xvals, labels=xlab,las=2)
 
 
 ####BINOMIAL 
