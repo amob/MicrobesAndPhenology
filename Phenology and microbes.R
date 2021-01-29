@@ -173,6 +173,15 @@ split_recs_scr <- split_recs_scr[split_recs_scr$micrtax.sim2!= "MF; fungi",] #su
 #might consider keeping them for other analyses?
 split_recs_scr$micrtax.sim2[split_recs_scr$micrtax.sim2=="fungi"] <- "otherfungi" #changing alphabetical position for convenience
 
+##numbers for text
+split_recs_scr$anyeffnum <- as.numeric(as.factor(split_recs_scr$anyeffect))-1
+sum(   tapply(split_recs_scr$anyeffnum[split_recs_scr$micrtax.sim2=="MF"],split_recs_scr$WOS.relevance.rank[split_recs_scr$micrtax.sim2=="MF"],sum) ==0)#0
+length(tapply(split_recs_scr$anyeffnum[split_recs_scr$micrtax.sim2=="MF"],split_recs_scr$WOS.relevance.rank[split_recs_scr$micrtax.sim2=="MF"],sum))#13
+sum(   tapply(split_recs_scr$anyeffnum[split_recs_scr$micrtax.sim2=="bacteria"],split_recs_scr$WOS.relevance.rank[split_recs_scr$micrtax.sim2=="bacteria"],sum) ==0)#0
+length(tapply(split_recs_scr$anyeffnum[split_recs_scr$micrtax.sim2=="bacteria"],split_recs_scr$WOS.relevance.rank[split_recs_scr$micrtax.sim2=="bacteria"],sum))#13
+length(unique(split_recs_scr$WOS.relevance.rank[split_recs_scr$phen.trait.2=="senescence time"]))
+length(unique(split_recs_scr$WOS.relevance.rank[split_recs_scr$phen.trait.2=="senescence time"]))
+length(unique(split_recs_scr$WOS.relevance.rank[split_recs_scr$phen.trait.2 %in% c("phyllochron","budburst") ]))
 
 numeric.phen.eff <- rep(NA, length=nrow(split_recs_scr))
 numeric.phen.eff[split_recs_scr$direction.effect.split=="earlier"] <- -1
@@ -224,6 +233,18 @@ germprbMAT <- split_recs_scr[split_recs_scr$phen.trait.2=="germination prb" & sp
 # 	germprbMAT<- germprbMAT[-which(germprbMAT$culture.sim=="observed"),] #removing the sole record that is not manipulated
 
 
+###for numbers in text:
+flowering$anyeffnum <- as.numeric(as.factor(flowering$anyeffect))-1
+sum(tapply(flowering$anyeffnum,flowering$WOS.relevance.rank,sum) == 0) #6
+length(tapply(flowering$anyeffnum,flowering$WOS.relevance.rank,sum))#38
+germtime$anyeffnum <- as.numeric(as.factor(germtime$anyeffect))-1
+sum(tapply(germtime$anyeffnum,germtime$WOS.relevance.rank,sum) ==0)#1 -- note this record only appears in germtime, not germprb
+length(tapply(germtime$anyeffnum,germtime$WOS.relevance.rank,sum))#19
+germprb$anyeffnum <- as.numeric(as.factor(germprb$anyeffect))-1
+sum(tapply(germprb$anyeffnum,germprb$WOS.relevance.rank,sum) ==0)#0
+length(tapply(germprb$anyeffnum,germprb$WOS.relevance.rank,sum))#13
+length(unique(c(germprb$WOS.relevance.rank, germtime$WOS.relevance.rank)))#overlap
+
 priornr=list(R=list(V= 1, fix=1))
 #I'm still not sure why/if R should be fixed, but JH has it fixed in ALL example priors, so I think so?
 prior=list(R=list(V= 1, fix=1), G=list(G1=list(V=1, nu=0)))
@@ -239,17 +260,17 @@ priornuup2=list(R=list(V= 1, fix=1), G=list(G1=list(V=1, nu=8),G2=list(V=1, nu=8
 ######BINOMIALS
 # flowerbiINT <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~1,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
 
-flowerbitax <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrtax.sim2,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
+flowerbitax <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrtax.sim2,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 #a a b b 
-flowerbiscom <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~Strainvcomm.1,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-flowerbimat <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~mating2,random = ~dummyWOSrelrank,data=floweringMAT,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-flowerbilh <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~lifeform2,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-flowerbiloc <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrloc3,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-flowerDbitax <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrtax.sim2,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-flowerDbiscom <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~Strainvcomm.1,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-flowerDbimat <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~mating2,random = ~dummyWOSrelrank,data=floweringMAT,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-flowerDbilh <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~lifeform2,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-flowerDbiloc <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrloc3,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
+flowerbiscom <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~Strainvcomm.1,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+flowerbimat <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~mating2,random = ~dummyWOSrelrank,data=floweringMAT,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+flowerbilh <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~lifeform2,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+flowerbiloc <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrloc3,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+flowerDbitax <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrtax.sim2,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+flowerDbiscom <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~Strainvcomm.1,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+flowerDbimat <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~mating2,random = ~dummyWOSrelrank,data=floweringMAT,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+flowerDbilh <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~lifeform2,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+flowerDbiloc <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrloc3,random = ~dummyWOSrelrank,data=flowering,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 earlyFmns <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
 		 function(z) tapply(flowering$isEarlyOrNrw,flowering[,colnames(flowering)==z],mean) )
 	earlyFmns[[3]] <- tapply(floweringMAT$isEarlyOrNrw,floweringMAT[,colnames(floweringMAT)=="mating2"],mean)
@@ -268,17 +289,17 @@ delayFses <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micr
 	delayFses[[6]] <- std.error(floweringMAT$isDelayOrExp)
 
 #more likely to be earlier:bacteria vs fungi (simplified micr only); culture inoc vs removed exps; strains vs mixed; ; annuals vs perennials
-germtimebitax <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrtax.sim2,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
+germtimebitax <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrtax.sim2,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 #b a c b
-germtimebiscom <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~Strainvcomm.1,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-germtimebimat <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~mating2,random = ~dummyWOSrelrank,data=germtimeMAT,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-germtimebilh <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~lifeform2,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-germtimebiloc <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrloc3,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-germtimeDbitax <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrtax.sim2,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-germtimeDbiscom <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~Strainvcomm.1,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-germtimeDbimat <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~mating2,random = ~dummyWOSrelrank,data=germtimeMAT,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-germtimeDbilh <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~lifeform2,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-germtimeDbiloc <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrloc3,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
+germtimebiscom <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~Strainvcomm.1,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germtimebimat <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~mating2,random = ~dummyWOSrelrank,data=germtimeMAT,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germtimebilh <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~lifeform2,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germtimebiloc <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrloc3,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germtimeDbitax <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrtax.sim2,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germtimeDbiscom <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~Strainvcomm.1,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germtimeDbimat <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~mating2,random = ~dummyWOSrelrank,data=germtimeMAT,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germtimeDbilh <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~lifeform2,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germtimeDbiloc <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrloc3,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 earlyGmns <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
 		 function(z) tapply(germtime$isEarlyOrNrw,germtime[,colnames(germtime)==z],mean) )
 	earlyGmns[[3]] <- tapply(germtimeMAT$isEarlyOrNrw,germtimeMAT[,colnames(germtimeMAT)=="mating2"],mean)
@@ -297,16 +318,16 @@ delayGses <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micr
 	delayGses[[6]] <- std.error(germtime$isDelayOrExp)
 
 
-germprbbitax <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrtax.sim2,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-germprbbiscom <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~Strainvcomm.1,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-germprbbimat <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~mating2,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-germprbbilh <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~lifeform2,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-germprbbiloc <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrloc3,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-germprbDbitax <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrtax.sim2,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-germprbDbiscom <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~Strainvcomm.1,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-germprbDbimat <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~mating2,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-germprbDbilh <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~lifeform2,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
-germprbDbiloc <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrloc3,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=100000,thin=50,burnin=1000)
+germprbbitax <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrtax.sim2,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germprbbiscom <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~Strainvcomm.1,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germprbbimat <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~mating2,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germprbbilh <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~lifeform2,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germprbbiloc <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrloc3,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germprbDbitax <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrtax.sim2,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germprbDbiscom <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~Strainvcomm.1,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germprbDbimat <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~mating2,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germprbDbilh <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~lifeform2,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germprbDbiloc <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrloc3,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 earlyGPmns <- lapply(c("micrtax.sim2","Strainvcomm.1","mating2","lifeform2","micrloc3"),
 		 function(z) tapply(germprb$isEarlyOrNrw,germprb[,colnames(germprb)==z],mean) )
 	earlyGPmns[[3]] <- tapply(germprbMAT$isEarlyOrNrw,germprbMAT[,colnames(germprbMAT)=="mating2"],mean)
@@ -791,18 +812,18 @@ dev.off()
 # 		 function(z) tapply(alltime$isEarlyOrNrw,alltime[,colnames(alltime)==z],std.error) )
 
 
-# get.mnpred.binom <- function(model,prb){
-# 	Sol <- model$Sol
-# 	ncats <- nrow(summary(model)$solutions)
-# 	int <- c(HPDi(invlogistic(Sol[,1]),prob=prb)[1], mean(invlogistic(Sol[,1])), HPDi(invlogistic(Sol[,1]),prob=prb)[2])
-# 	betacats <- 2:ncats
-# 	betahpdi <- sapply(betacats, function(b) c( HPDi(invlogistic( Sol[,1]+Sol[,b] ),prob=prb)[1],  
-# 												mean(invlogistic( Sol[,1]+Sol[,b] )), 
-# 												HPDi(invlogistic( Sol[,1]+Sol[,b] ),prob=prb)[2]  ) )
-# 	Expprb <- rbind(int, t(betahpdi))
-# 	rownames(Expprb) <- colnames(Sol)[1:ncats]
-# 	return(Expprb )
-# }
+get.mnpred.binom <- function(model,prb){
+	Sol <- model$Sol
+	ncats <- nrow(summary(model)$solutions)
+	int <- c(HPDi(invlogistic(Sol[,1]),prob=prb)[1], mean(invlogistic(Sol[,1])), HPDi(invlogistic(Sol[,1]),prob=prb)[2])
+	betacats <- 2:ncats
+	betahpdi <- sapply(betacats, function(b) c( HPDi(invlogistic( Sol[,1]+Sol[,b] ),prob=prb)[1],  
+												mean(invlogistic( Sol[,1]+Sol[,b] )), 
+												HPDi(invlogistic( Sol[,1]+Sol[,b] ),prob=prb)[2]  ) )
+	Expprb <- rbind(int, t(betahpdi))
+	rownames(Expprb) <- colnames(Sol)[1:ncats]
+	return(Expprb )
+}
 
 # get.mnpred.binomni <- function(model,prb){
 # 	Sol <- model$Sol
