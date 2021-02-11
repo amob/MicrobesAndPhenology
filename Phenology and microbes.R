@@ -118,6 +118,10 @@ length(tapply(germprb$anyeffnum,germprb$WOS.relevance.rank,sum))#25
 length(unique(c(germprb$WOS.relevance.rank, germtime$WOS.relevance.rank)))#overlap 29
 
 
+sapply(sort(unique(split_recs_scr$microbeNPHO)), function(z) sapply(sort(unique(split_recs_scr$micrtax)), function(k) sum(split_recs_scr$micrtax==k & split_recs_scr$microbeNPHO==z) ) )
+sapply(sort(unique(split_recs_scr$micrloc)), function(z) sapply(sort(unique(split_recs_scr$micrtax)), function(k) sum(split_recs_scr$micrtax==k & split_recs_scr$micrloc==z) ) )
+sapply(sort(unique(split_recs_scr$micrloc)), function(z) sapply(sort(unique(split_recs_scr$microbeNPHO)), function(k) sum(split_recs_scr$microbeNPHO==k & split_recs_scr$micrloc==z) ) )
+
 
 ##split early/delay/expanded/narrowed into binomial
 numeric.phen.eff <- rep(NA, length=nrow(split_recs_scr))
