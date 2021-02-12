@@ -416,7 +416,7 @@ mtext("location", side = 1, at = mean(xvals[10:11]), line=8.5)
 dev.off()
 
 
-###Supplemental figure. (replaces variables for easier code, watch out if running piecewise)
+###Supplemental figures. (replaces variables for easier code, watch out if running piecewise)
 
 cols1 <- c("inoctype","lifeform","mating") #"inoctype","lifeform",
 flwrdlist <- list(flowering,flowering,floweringMAT)
