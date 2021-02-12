@@ -346,32 +346,32 @@ germPD.se <- weightmns2(germplist,cols=cols1,germprb)[[4]]
 
 
 #fill in from model results
-siggroupsFE <- c("","","", "-", # #mph , at 0.9 "a","ab","b", "-" ; .95 " "," "," ", "-"
-				"ab","a","b","ab",#tax #at 0.9; at .9 "ab","a","b","b"; .95 "ab","a","b","ab"
+siggroupsFE <- c("a","ab","b", "-", # #mph , at 0.9 "a","ab","b", "-" ; .95 " "," "," ", "-"
+				"ab","a","b","b",#tax #at 0.9; at .9 "ab","a","b","b"; .95 "ab","a","b","ab"
 				" "," ","-"," ")#, #loc
-siggroupsFD <- c( "","","","-", #"b", #mph # at 0.9 "b","ab","a","-" ; .95 " "," "," ","-",
+siggroupsFD <- c("b","ab","a","-", #"b", #mph # at 0.9 "b","ab","a","-" ; .95 " "," "," ","-",
 				"b","b","a","ab",#tax # same for .95 and .9
 				"ab","b","-","a")#, #loc #at 0.95 or .9 same
-siggroupsGtE <- c("","","-","-", #mph; n.s. at .9  "b","a","-","-", at .95 " "," ","-","-"
+siggroupsGtE <- c("b","a","-","-", #mph; n.s. at .9  "b","a","-","-", at .95 " "," ","-","-"
 				"a","-","b","a",#tax  #same at .95
 				"","","","-")#, #loc	
 siggroupsGtD <- c(" "," ","-","-",#, #mph
 				"b","-","a","b",#tax # same at .95
-				 "","","","-")#,#loc  ; at .9 "ab","b","a","-"; at .95 " "," "," ","-"
+				"ab","b","a","-")#,#loc  ; at .9 "ab","b","a","-"; at .95 " "," "," ","-"
 siggroupsGpE <- c(" "," ","-","-", #mph ****no phytohormone records***
 				"b","-","a","a",#tax; same at .95
 				" "," "," ","-")#, #loc
 siggroupsGpD <- c(" "," ","-","-", #mph ****no phytohormone records***
 				"","-","","",#tax
-				"ab","a","b","-")#, #loc; at .9: a a b; at. 95 "ab","a","b","-"
+				"a","a","b","-")#, #loc; at .9: a a b; at. 95 "ab","a","b","-"
 
-pdf("means_ses_and prelim fitted diffs from binom slim 95hpdi.pdf",height=6,width=4)
+pdf("means_ses_and prelim fitted diffs from binom slim 90hpdi.pdf",height=6,width=4)
 xvals <- c(seq(from=0,to=1,length.out=c(4+4+4) ))
 # xlab <- c("nutrients","other beneficial","pathogen","phytohormones","bacteria","myc fungi","mixed","other fungi","root","seed","shoot","mult. w/ reprod","mult. w/o reprod")
 xlab <- c("nutrients","other beneficial","pathogen","phytohormones","bacteria","myc fungi","mixed","other fungi","multiple","root","seed","shoot")
 par(mfrow=c(3,1))
 par(mar=c(1,0,1,0))
-par(oma=c(7,4,1,1))
+par(oma=c(9,4,1,1))
 plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.3,1.2),yaxt="n")
 	points(unlist(flwrE.m)~xvals[-11],pch=16)
 	points(unlist(flwrD.m)~I(xvals[-11]+0.01),pch=16,col="gray")
@@ -407,6 +407,12 @@ plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.3,1.2),y
 	axis(side=2,at=c(0,0.25,0.5,0.75,1),labels=c(0," ",0.5, " ",1))
 legend(xvals[9],y=1.2,c("Narrowed","Expanded"),fill=c("black","gray"),bty="n")
 axis(side=1,at=xvals, labels=xlab,las=2)
+mtext("microbe", side = 1, at = mean(xvals[2:3]), line=7.5) 
+mtext("microbe", side = 1, at = mean(xvals[6:7]), line=7.5) 
+mtext("microbe", side = 1, at = mean(xvals[10:11]), line=7.5)  
+mtext("mechanism", side = 1, at = mean(xvals[2:3]), line=8.5) 
+mtext("taxonomy", side = 1, at = mean(xvals[6:7]), line=8.5) 
+mtext("location", side = 1, at = mean(xvals[10:11]), line=8.5)  
 dev.off()
 
 
@@ -436,10 +442,10 @@ siggroupsFE <- c("b","a","ab",#scom  same at .95/.9
  				"","") 
 siggroupsFD <- c("a","b","b",#scom; same at .95/.9; looks different from model predictions
 				"","","",#lh
-				" "," ") #mat #at .9 "b","a"
+				"b","a") #mat #at .9 "b","a"; at .95  "", ""
 siggroupsGtE <- c("","","",#scom
 				" "," "," ",#lh 
-				" "," ") #mat n.s. at 0.95 a .9 "a","b"
+				"a","b") #mat n.s. at 0.95 a .9 "a","b"
 siggroupsGtD <- c("a","b","c",#scom # at 0.95/.9 same
 				"a","ab","b",#lh at .95/.9 same
 				"","") #mat
@@ -450,12 +456,12 @@ siggroupsGpD <- c("b","b","a",#scom ; recall is comm, strain, strain mix; same a
 				" "," "," ",#lh
 				"","") # mat 
 
-pdf("means_ses_and prelim fitted diffs from binom supp cats 95hpdi.pdf",height=6,width=3)
+pdf("means_ses_and prelim fitted diffs from binom supp cats 90hpdi.pdf",height=6,width=3.5)
 xvals <- c(seq(from=0,to=1,length.out=c(3+3+2) ))
 xlab <- c("community","strain","strain mix","annual","both","perennial","outcrosser","selfer")
 par(mfrow=c(3,1))
 par(mar=c(1,0,1,0))
-par(oma=c(7,4,1,1))
+par(oma=c(8,4,1,1))
 plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.3,1.2),yaxt="n")
 	points(unlist(flwrE.m)~xvals,pch=16)
 	points(unlist(flwrD.m)~I(xvals+0.01),pch=16,col="gray")
@@ -491,6 +497,11 @@ plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.3,1.2),y
 	axis(side=2,at=c(0,0.25,0.5,0.75,1),labels=c(0," ",0.5, " ",1))
 legend(xvals[4],y=1.2,c("Narrowed","Expanded"),fill=c("black","gray"),bty="n")
 axis(side=1,at=xvals, labels=xlab,las=2)
+mtext("inoculation", side = 1, at = mean(xvals[2]), line=6.5) 
+mtext("type", side = 1, at = mean(xvals[2]), line=7.5) 
+mtext("lifeform", side = 1, at = mean(xvals[5]), line=7) 
+mtext("mating", side = 1, at = mean(xvals[7:8]), line=6.5)  
+mtext("system", side = 1, at = mean(xvals[7:8]), line=7.5)  
 dev.off()
 
 
