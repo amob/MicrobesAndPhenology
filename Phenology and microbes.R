@@ -27,6 +27,7 @@ cwos_recs <- read.csv("saved records WOS friday sep 11 2020 - 500scoredWOSrecord
 # split_recs <- read.csv("trimmed RECORDS FOR SPLITTING v4.csv", #sep="\t",
 split_recs <- read.csv("saved records WOS friday sep 11 2020 - Split Records.csv", #sep="\t",
 					stringsAsFactors=F,na.strings = c("NA","")) 
+split_recs$mating[which(is.na(split_recs$mating) & split_recs$WOS.relevance.rank==28) ] <- "unk" # mating system score of unknown was left out for one record
 split_recs_scr <- split_recs[!is.na(split_recs$direction.effect.split),] 
 	#several records were not possible to score for effect direction; but were relevant to microbial effects on phenology
 
@@ -50,17 +51,27 @@ wos_MiP <- cwos_recs[which(MiP==1),]
 taxand <- gsub("; ", wos_rel$micrtax,replacement="&")
 locand <- gsub("; ", wos_rel$micrloc,replacement="&")
 phenand <- gsub("; ", wos_rel$phentrait_of,replacement="&")
+#replace abbreviation "prb" from phenand
+phenand[phenand == "germination prb"] <- "germination probability"
+phenand[phenand == "germination time&germination prb"] <- "germination time&germination probability"
+phenand[phenand == "germination prb&flowering time"] <- "germination probability&flowering time"
 
-pdf("upsetrtax.pdf",width=4,height=5)
-upset(fromExpression(table(taxand)),nsets=15, order.by = "freq")
+pdf("upsetrtax.pdf",width=5,height=5)
+upset(fromExpression(table(taxand)),nsets=15, order.by = "freq", mainbar.y.max = 45,
+	mainbar.y.label="# with microbe taxonomy intersect", sets.x.label = "# with microbe taxonomy")
 dev.off()
-pdf("upsetrloc.pdf",width=4,height=5)
-upset(fromExpression(table(locand)),nsets=10, order.by = "freq")
+pdf("upsetrloc.pdf",width=4.5,height=5)
+upset(fromExpression(table(locand)),nsets=10, order.by = "freq", mainbar.y.max=105,
+	mainbar.y.label="# with microbes in tissue/s in intersect", sets.x.label = "# with microbes in tissue")
 dev.off()
-pdf("upsetrtrt.pdf",width=4,height=5)
-upset(fromExpression(table(phenand)), nsets=15, order.by = "freq")
+pdf("upsetrtrt.pdf",width=4.5,height=5)
+upset(fromExpression(table(phenand)), nsets=15, order.by = "freq", mainbar.y.max = 25.5,
+	mainbar.y.label="# measured phenophase/s in intersect", sets.x.label = "# measured phenophase")
 dev.off()
 
+
+#mainbar.y.label = "Intersection Size",
+#	sets.x.label = "Set Size"
 
 ################################################################################
 ####Analysis of phenological timing records
@@ -94,13 +105,17 @@ length(unique(split_recs$WOS.relevance.rank[split_recs$phentrait %in% c("phylloc
 table(split_recs$microbeNPHO)
 length(unique(split_recs$WOS.relevance.rank[split_recs$lifeform=="annual" | split_recs$lifeform=="both"]))
 length(unique(split_recs$WOS.relevance.rank[split_recs$lifeform=="perennial"]))
-#appendix S8
-apps8 <- cbind(names(table(split_recs$plant.family)),table(split_recs$plant.family), 
+#appendix S5, able of plant families
+apps5 <- cbind(names(table(split_recs$plant.family)),table(split_recs$plant.family), 
 	sapply(sort(unique(split_recs$plant.family)), function(fam) 
-		 length(unique(split_recs$WOS.relevance.rank[split_recs$plant.family==fam])) )
+		 length(unique(split_recs$WOS.relevance.rank[split_recs$plant.family==fam])) ),
+		sapply(sort(unique(split_recs$plant.family)), function(fam) length(which(split_recs$lifeform[split_recs$plant.family==fam]=="annual")) ),
+		sapply(sort(unique(split_recs$plant.family)), function(fam) length(which(split_recs$lifeform[split_recs$plant.family==fam]=="perennial")) ),
+		sapply(sort(unique(split_recs$plant.family)), function(fam) length(which(split_recs$lifeform[split_recs$plant.family==fam]=="both")) )
 	)
-colnames(apps8) <- c("Plant Family","Number of Tests","Number of Studies")
-write.csv(apps8,"AppendixS8.csv",row.names=F)	
+	#
+colnames(apps5) <- c("Plant Family","Number of Tests","Number of Studies","Tests with annuals","Tests with perennials","Tests with mixed life history species")
+write.csv(apps5,"AppendixS5.csv",row.names=F)	
 
 #repeat above alternately for subset data, if exclude records that could not be split: some observed effects, but are not included in model results
 split_recs_scr$anyeffnum <- as.numeric(as.factor(split_recs_scr$anyeffect))-1 #
@@ -114,8 +129,8 @@ sum(tapply(germtime$anyeffnum,germtime$WOS.relevance.rank,sum) ==0)#2
 length(tapply(germtime$anyeffnum,germtime$WOS.relevance.rank,sum))#19
 germprb$anyeffnum <- as.numeric(as.factor(germprb$anyeffect))-1 
 sum(tapply(germprb$anyeffnum,germprb$WOS.relevance.rank,sum) ==0)#1
-length(tapply(germprb$anyeffnum,germprb$WOS.relevance.rank,sum))#25
-length(unique(c(germprb$WOS.relevance.rank, germtime$WOS.relevance.rank)))#overlap 29
+length(tapply(germprb$anyeffnum,germprb$WOS.relevance.rank,sum))#26-1=25
+length(unique(c(germprb$WOS.relevance.rank, germtime$WOS.relevance.rank)))#overlap 
 
 
 sapply(sort(unique(split_recs_scr$microbeNPHO)), function(z) sapply(sort(unique(split_recs_scr$micrtax)), function(k) sum(split_recs_scr$micrtax==k & split_recs_scr$microbeNPHO==z) ) )
@@ -180,7 +195,7 @@ wosbin <- function(dataframe, woscolname,nrecs){
 }
 
 flowering <- wosbin(split_recs_scr[split_recs_scr$phentrait=="flowering time",],"WOS.relevance.rank",15)
-	## *** LOW SAMPLE REMOVALS FOR TOTAL TESTS, NOTE THAT SOMETIMES THERE IS STILL ONLY ONE STUDY PER CATEGORY ***
+	## *** LOW SAMPLE REMOVALS FOR TOTAL TESTS, NOTE THAT SOMETIMES THERE IS STILL ONLY ONE STUDY PER CATEGORY ***  plants that both self and outcross are removed from mating system analysis
 	#low sample, removing: virus = 9
 	flowerTAX    <- wosbin(split_recs_scr[split_recs_scr$phentrait=="flowering time" & split_recs_scr$micrtax !="virus",],"WOS.relevance.rank",15)
 	#there are 0 records for seed microbe impacts on in flowering time
@@ -261,9 +276,9 @@ germtimebitax <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrtax,random = ~d
 germtimebiscom <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~inoctype,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 	germtimebiscom2 <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~strainvcommsa,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germtimebimat <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~mating,random = ~dummyWOSrelrank,data=germtimeMAT,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
-germtimebimph <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~microbeNPHO,random = ~dummyWOSrelrank,data=germtimeMPH,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germtimebilh <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~lifeform,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 	germtimebilh2 <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~lifeformpa,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germtimebimph <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~microbeNPHO,random = ~dummyWOSrelrank,data=germtimeMPH,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germtimebiloc <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrloc,random = ~dummyWOSrelrank,data=germtimeLOC,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 	germtimebiloc2 <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrlocseeda,random = ~dummyWOSrelrank,data=germtimeLOC,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 #
@@ -272,9 +287,9 @@ germtimeDbitax <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrtax,random = ~
 germtimeDbiscom <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~inoctype,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 	germtimeDbiscom2 <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~strainvcommsa,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germtimeDbimat <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~mating,random = ~dummyWOSrelrank,data=germtimeMAT,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
-germtimeDbimph <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~microbeNPHO,random = ~dummyWOSrelrank,data=germtimeMPH,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germtimeDbilh <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~lifeform,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 	germtimeDbilh2 <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~lifeformpa,random = ~dummyWOSrelrank,data=germtime,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germtimeDbimph <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~microbeNPHO,random = ~dummyWOSrelrank,data=germtimeMPH,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germtimeDbiloc <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrloc,random = ~dummyWOSrelrank,data=germtimeLOC,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 	germtimeDbiloc2 <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrlocseeda,random = ~dummyWOSrelrank,data=germtimeLOC,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 
@@ -283,10 +298,9 @@ germprbbitax <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrtax,random = ~du
 germprbbiscom <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~inoctype,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 	germprbbiscom2 <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~strainvcommsa,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germprbbimat <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~mating,random = ~dummyWOSrelrank,data=germprbMAT,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
-germprbbimph <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~microbeNPHO,random = ~dummyWOSrelrank,data=germprbMPH,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
-	germprbbimph2 <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~mphba,random = ~dummyWOSrelrank,data=germprbMPH,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germprbbilh <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~lifeform,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 	germprbbilh2 <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~lifeformpa,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germprbbimph <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~microbeNPHO,random = ~dummyWOSrelrank,data=germprbMPH,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germprbbiloc <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrloc,random = ~dummyWOSrelrank,data=germprbLOC,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 	germprbbiloc2 <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrlocseeda,random = ~dummyWOSrelrank,data=germprbLOC,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 #
@@ -295,10 +309,9 @@ germprbDbitax <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrtax,random = ~d
 germprbDbiscom <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~inoctype,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 	germprbDbiscom2 <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~strainvcommsa,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germprbDbimat <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~mating,random = ~dummyWOSrelrank,data=germprbMAT,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
-germprbDbimph <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~microbeNPHO,random = ~dummyWOSrelrank,data=germprbMPH,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
-	germprbDbimph2 <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~mphba,random = ~dummyWOSrelrank,data=germprbMPH,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germprbDbilh <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~lifeform,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 	germprbDbilh2 <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~lifeformpa,random = ~dummyWOSrelrank,data=germprb,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
+germprbDbimph <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~microbeNPHO,random = ~dummyWOSrelrank,data=germprbMPH,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 germprbDbiloc <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrloc,random = ~dummyWOSrelrank,data=germprbLOC,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 	germprbDbiloc2 <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~micrlocseeda,random = ~dummyWOSrelrank,data=germprbLOC,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 
@@ -367,11 +380,10 @@ siggroupsGpD <- c(" "," ","-","-", #mph ****no phytohormone records***
 
 pdf("means_ses_and prelim fitted diffs from binom slim 90hpdi.pdf",height=6,width=4)
 xvals <- c(seq(from=0,to=1,length.out=c(4+4+4) ))
-# xlab <- c("nutrients","other beneficial","pathogen","phytohormones","bacteria","myc fungi","mixed","other fungi","root","seed","shoot","mult. w/ reprod","mult. w/o reprod")
-xlab <- c("nutrients","other beneficial","pathogen","phytohormones","bacteria","myc fungi","mixed","other fungi","multiple","root","seed","shoot")
+xlab <- c("nutrients","other beneficial","pathogen","phytohormones","bacteria","mycorrhizal fungi","mixed","other fungi","multiple","root","seed","shoot")
 par(mfrow=c(3,1))
 par(mar=c(1,0,1,0))
-par(oma=c(9,4,1,1))
+par(oma=c(10,4,1,1))
 plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.3,1.2),yaxt="n")
 	points(unlist(flwrE.m)~xvals[-11],pch=16)
 	points(unlist(flwrD.m)~I(xvals[-11]+0.01),pch=16,col="gray")
@@ -382,7 +394,7 @@ plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.3,1.2),y
 	text(xvals,y=-0.2,siggroupsFD,col="gray")
 	mtext(side=3,"flowering time")
 	axis(side=2,at=c(0,0.25,0.5,0.75,1),labels=c(0," ",0.5, " ",1))
-legend(xvals[9],y=1.2,c("Earlier","Delay"),fill=c("black","gray"),bty="n")
+legend(xvals[9],y=1.2,c("earlier","delay"),fill=c("black","gray"),bty="n")
 plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.3,1.2),yaxt="n")
 	points(unlist(germTE.m)~xvals[-6],pch=16)
 	points(unlist(germTD.m)~I(xvals[-6]+0.01),pch=16,col="gray")
@@ -392,9 +404,9 @@ plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.3,1.2),y
 	text(xvals,y=1.2,siggroupsGtE)
 	text(xvals,y=-0.2,siggroupsGtD,col="gray")
 	mtext(side=3,"germination time")
-	mtext(side=2,"Prb of observing Effect",line=2)
+	mtext(side=2,"probability of observing effect",line=2)
 	axis(side=2,at=c(0,0.25,0.5,0.75,1),labels=c(0," ",0.5, " ",1))
-legend(xvals[9],y=1.2,c("Earlier","Delay"),fill=c("black","gray"),bty="n")
+legend(xvals[9],y=1.2,c("earlier","delay"),fill=c("black","gray"),bty="n")
 plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.3,1.2),yaxt="n")
 	points(unlist(germPE.m)~xvals,pch=16)
 	points(unlist(germPD.m)~I(xvals+0.01),pch=16,col="gray")
@@ -405,14 +417,14 @@ plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.3,1.2),y
 	text(xvals,y=-0.2,siggroupsGpD,col="gray")
 	mtext(side=3,"germination probability")
 	axis(side=2,at=c(0,0.25,0.5,0.75,1),labels=c(0," ",0.5, " ",1))
-legend(xvals[9],y=1.2,c("Narrowed","Expanded"),fill=c("black","gray"),bty="n")
+legend(xvals[9],y=1.2,c("narrowed","expanded"),fill=c("black","gray"),bty="n")
 axis(side=1,at=xvals, labels=xlab,las=2)
-mtext("microbe", side = 1, at = mean(xvals[2:3]), line=7.5) 
-mtext("microbe", side = 1, at = mean(xvals[6:7]), line=7.5) 
-mtext("microbe", side = 1, at = mean(xvals[10:11]), line=7.5)  
-mtext("mechanism", side = 1, at = mean(xvals[2:3]), line=8.5) 
-mtext("taxonomy", side = 1, at = mean(xvals[6:7]), line=8.5) 
-mtext("location", side = 1, at = mean(xvals[10:11]), line=8.5)  
+mtext("microbe", side = 1, at = mean(xvals[2:3]), line=8.5) 
+mtext("microbe", side = 1, at = mean(xvals[6:7]), line=8.5) 
+mtext("microbe", side = 1, at = mean(xvals[10:11]), line=8.5)  
+mtext("mechanism", side = 1, at = mean(xvals[2:3]), line=9.5) 
+mtext("taxonomy", side = 1, at = mean(xvals[6:7]), line=9.5) 
+mtext("location", side = 1, at = mean(xvals[10:11]), line=9.5)  
 dev.off()
 
 
@@ -442,7 +454,7 @@ siggroupsFE <- c("b","a","ab",#scom  same at .95/.9
  				"","") 
 siggroupsFD <- c("a","b","b",#scom; same at .95/.9; looks different from model predictions
 				"","","",#lh
-				"b","a") #mat #at .9 "b","a"; at .95  "", ""
+				" "," ") #mat
 siggroupsGtE <- c("","","",#scom
 				" "," "," ",#lh 
 				"a","b") #mat n.s. at 0.95 a .9 "a","b"
@@ -472,7 +484,7 @@ plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.3,1.2),y
 	text(xvals,y=-0.2,siggroupsFD,col="gray")
 	mtext(side=3,"flowering time")
 	axis(side=2,at=c(0,0.25,0.5,0.75,1),labels=c(0," ",0.5, " ",1))
-legend(xvals[4],y=1.2,c("Earlier","Delay"),fill=c("black","gray"),bty="n")
+legend(xvals[4],y=1.2,c("earlier","delay"),fill=c("black","gray"),bty="n")
 plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.3,1.2),yaxt="n")
 	points(unlist(germTE.m)~xvals,pch=16)
 	points(unlist(germTD.m)~I(xvals+0.01),pch=16,col="gray")
@@ -482,9 +494,9 @@ plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.3,1.2),y
 	text(xvals,y=1.2,siggroupsGtE)
 	text(xvals,y=-0.2,siggroupsGtD,col="gray")
 	mtext(side=3,"germination time")
-	mtext(side=2,"Prb of observing Effect",line=2)
+	mtext(side=2,"probability of observing effect",line=2)
 	axis(side=2,at=c(0,0.25,0.5,0.75,1),labels=c(0," ",0.5, " ",1))
-legend(xvals[4],y=1.2,c("Earlier","Delay"),fill=c("black","gray"),bty="n")
+legend(xvals[4],y=1.2,c("earlier","delay"),fill=c("black","gray"),bty="n")
 plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.3,1.2),yaxt="n")
 	points(unlist(germPE.m)~xvals,pch=16)
 	points(unlist(germPD.m)~I(xvals+0.01),pch=16,col="gray")
@@ -495,7 +507,7 @@ plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.3,1.2),y
 	text(xvals,y=-0.2,siggroupsGpD,col="gray")
 	mtext(side=3,"germination probability")
 	axis(side=2,at=c(0,0.25,0.5,0.75,1),labels=c(0," ",0.5, " ",1))
-legend(xvals[4],y=1.2,c("Narrowed","Expanded"),fill=c("black","gray"),bty="n")
+legend(xvals[4],y=1.2,c("narrowed","expanded"),fill=c("black","gray"),bty="n")
 axis(side=1,at=xvals, labels=xlab,las=2)
 mtext("inoculation", side = 1, at = mean(xvals[2]), line=6.5) 
 mtext("type", side = 1, at = mean(xvals[2]), line=7.5) 
@@ -524,12 +536,103 @@ plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.3,1.2),y
 	arrows(x0=xvals+0.01 , y0=phentraitmnses[[3]] -phentraitmnses[[4]], y1 = phentraitmnses[[3]] + phentraitmnses[[4]],length=0  ,col="gray"   )
 	text(xvals,y=1.2,siggroupstrait[1:6])
 	text(xvals,y=-0.2,siggroupstrait[7:12],col="gray")
-	mtext(side=2,"Prb of observing Effect",line=2)
+	mtext(side=2,"probability of observing effect",line=2)
 # 	mtext(side=3,"event time")
 	axis(side=2,at=c(0,0.25,0.5,0.75,1),labels=c(0," ",0.5, " ",1))
-legend(xvals[4],y=1.2,c("Earlier","Delay"),fill=c("black","gray"),bty="n")
+legend(xvals[4],y=1.2,c("earlier","delay"),fill=c("black","gray"),bty="n")
 axis(side=1,at=xvals, labels=xlab,las=2)
 dev.off()
+
+
+###main figure, re-done for 95% HPDI
+cols1 <- c("microbeNPHO","micrtax","micrloc") 
+flwrdlist <- list(flowering,flowering,flowering)
+germtlist <- list(germtime,germtime,germtime)
+germplist <- list(germprb,germprb,germprb)
+
+flwrE.m <-   weightmns2(flwrdlist,cols=cols1,flowering)[[1]][-c(5,10)] 
+flwrE.se <-  weightmns2(flwrdlist,cols=cols1,flowering)[[2]][-c(5,10)]
+flwrD.m <-   weightmns2(flwrdlist,cols=cols1,flowering)[[3]][-c(5,10)]
+flwrD.se <-  weightmns2(flwrdlist,cols=cols1,flowering)[[4]][-c(5,10)]
+germTE.m <-  weightmns2(germtlist,cols=cols1,germtime)[[1]][-5] 
+germTE.se <- weightmns2(germtlist,cols=cols1,germtime)[[2]][-5] 
+germTD.m <-  weightmns2(germtlist,cols=cols1,germtime)[[3]][-5] 
+germTD.se <- weightmns2(germtlist,cols=cols1,germtime)[[4]][-5] 
+germPE.m <-  weightmns2(germplist,cols=cols1,germprb)[[1]] 
+germPE.se <- weightmns2(germplist,cols=cols1,germprb)[[2]] 
+germPD.m <-  weightmns2(germplist,cols=cols1,germprb)[[3]] 
+germPD.se <- weightmns2(germplist,cols=cols1,germprb)[[4]] 
+#subtracting unknown category in MPH (and virus for flowering, which is only 1 sudy with three tests), which is not useful. leaving in germP to fill gap from phytohormones, of which there are no studies in germination probability
+
+siggroupsFE <- c(" "," "," ", "-", # #mph , at 0.9 "a","ab","b", "-" ; .95 " "," "," ", "-"
+				"ab","a","b","ab",#tax #at 0.9; at .9 "ab","a","b","b"; .95 "ab","a","b","ab"
+				" "," ","-"," ")#, #loc
+siggroupsFD <- c(" "," "," ","-", #"b", #mph # at 0.9 "b","ab","a","-" ; .95 " "," "," ","-",
+				"b","b","a","ab",#tax # same for .95 and .9
+				"ab","b","-","a")#, #loc #at 0.95 or .9 same
+siggroupsGtE <- c(" "," ","-","-", #mph; n.s. at .9  "b","a","-","-", at .95 " "," ","-","-"
+				"a","-","b","a",#tax  #same at .9/.95
+				"","","","-")#, #loc	
+siggroupsGtD <- c(" "," ","-","-",#, #mph
+				"b","-","a","b",#tax # same at .9/.95
+				" "," "," ","-")#,#loc  ; at .9 "ab","b","a","-"; at .95 " "," "," ","-"
+siggroupsGpE <- c(" "," ","-","-", #mph ****no phytohormone records***
+				"b","-","a","a",#tax; same at .95
+				" "," "," ","-")#, #loc
+siggroupsGpD <- c(" "," ","-","-", #mph ****no phytohormone records***
+				"","-","","",#tax
+				"ab","a","b","-")#, #loc; at .9: a a b; at. 95 "ab","a","b","-"
+pdf("means_ses_and prelim fitted diffs from binom slim 95hpdi.pdf",height=6,width=4)
+xvals <- c(seq(from=0,to=1,length.out=c(4+4+4) ))
+xlab <- c("nutrients","other beneficial","pathogen","phytohormones","bacteria","mycorrhizal fungi","mixed","other fungi","multiple","root","seed","shoot")
+par(mfrow=c(3,1))
+par(mar=c(1,0,1,0))
+par(oma=c(10,4,1,1))
+plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.3,1.2),yaxt="n")
+	points(unlist(flwrE.m)~xvals[-11],pch=16)
+	points(unlist(flwrD.m)~I(xvals[-11]+0.01),pch=16,col="gray")
+	arrows(x0=xvals[-11] , y0=flwrE.m -flwrE.se, y1 = flwrE.m +flwrE.se,length=0     )
+	arrows(x0=xvals[-11]+0.01 , y0=flwrD.m -flwrD.se, y1 = flwrD.m +flwrD.se,length=0  ,col="gray"   )
+	abline(v= c(sum(xvals[4:5])/2, sum(xvals[8:9])/2 ),lty=3 )
+	text(xvals,y=1.2,siggroupsFE)
+	text(xvals,y=-0.2,siggroupsFD,col="gray")
+	mtext(side=3,"flowering time")
+	axis(side=2,at=c(0,0.25,0.5,0.75,1),labels=c(0," ",0.5, " ",1))
+legend(xvals[9],y=1.2,c("earlier","delay"),fill=c("black","gray"),bty="n")
+plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.3,1.2),yaxt="n")
+	points(unlist(germTE.m)~xvals[-6],pch=16)
+	points(unlist(germTD.m)~I(xvals[-6]+0.01),pch=16,col="gray")
+	arrows(x0=xvals[-6] , y0=germTE.m -germTE.se, y1 = germTE.m +germTE.se,length=0     )
+	arrows(x0=xvals[-6]+0.01 , y0=germTD.m -germTD.se, y1 = germTD.m +germTD.se,length=0  ,col="gray"   )
+	abline(v= c(sum(xvals[4:5])/2, sum(xvals[8:9])/2),lty=3 )
+	text(xvals,y=1.2,siggroupsGtE)
+	text(xvals,y=-0.2,siggroupsGtD,col="gray")
+	mtext(side=3,"germination time")
+	mtext(side=2,"probability of observing effect",line=2)
+	axis(side=2,at=c(0,0.25,0.5,0.75,1),labels=c(0," ",0.5, " ",1))
+legend(xvals[9],y=1.2,c("earlier","delay"),fill=c("black","gray"),bty="n")
+plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.3,1.2),yaxt="n")
+	points(unlist(germPE.m)~xvals,pch=16)
+	points(unlist(germPD.m)~I(xvals+0.01),pch=16,col="gray")
+	arrows(x0=xvals, y0=germPE.m -germPE.se, y1 = germPE.m +germPE.se,length=0     )
+	arrows(x0=xvals+0.01 , y0=germPD.m -germPD.se, y1 = germPD.m +germPD.se,length=0  ,col="gray"   )
+	abline(v= c(sum(xvals[4:5])/2, sum(xvals[8:9])/2),lty=3 )
+	text(xvals,y=1.2,siggroupsGpE)
+	text(xvals,y=-0.2,siggroupsGpD,col="gray")
+	mtext(side=3,"germination probability")
+	axis(side=2,at=c(0,0.25,0.5,0.75,1),labels=c(0," ",0.5, " ",1))
+legend(xvals[9],y=1.2,c("narrowed","expanded"),fill=c("black","gray"),bty="n")
+axis(side=1,at=xvals, labels=xlab,las=2)
+mtext("microbe", side = 1, at = mean(xvals[2:3]), line=8.5) 
+mtext("microbe", side = 1, at = mean(xvals[6:7]), line=8.5) 
+mtext("microbe", side = 1, at = mean(xvals[10:11]), line=8.5)  
+mtext("mechanism", side = 1, at = mean(xvals[2:3]), line=9.5) 
+mtext("taxonomy", side = 1, at = mean(xvals[6:7]), line=9.5) 
+mtext("location", side = 1, at = mean(xvals[10:11]), line=9.5)  
+dev.off()
+
+
+
 
 ###The below is not used, because weighted means are closer to the raw data than data adjusted for random effects (a partial residual)
 ##but this code may be of interest for exploring random effects
