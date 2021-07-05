@@ -54,6 +54,7 @@ phenand[phenand == "germination prb"] <- "germination probability"
 phenand[phenand == "germination time&germination prb"] <- "germination time&germination probability"
 phenand[phenand == "germination prb&flowering time"] <- "germination probability&flowering time"
 
+#Appendix figures
 pdf("upsetrtax.pdf",width=5,height=5)
 upset(fromExpression(table(taxand)),nsets=15, order.by = "freq", mainbar.y.max = 45,
 	mainbar.y.label="# with microbe taxonomy intersect", sets.x.label = "# with microbe taxonomy")
@@ -62,7 +63,9 @@ pdf("upsetrloc.pdf",width=4.5,height=5)
 upset(fromExpression(table(locand)),nsets=10, order.by = "freq", mainbar.y.max=105,
 	mainbar.y.label="# with microbes in tissue/s in intersect", sets.x.label = "# with microbes in tissue")
 dev.off()
-pdf("upsetrtrt.pdf",width=4.5,height=5)
+
+#Figure 3
+pdf("Figure 3 upsetrtrt.pdf",width=4.5,height=5)
 upset(fromExpression(table(phenand)), nsets=15, order.by = "freq", mainbar.y.max = 25.5,
 	mainbar.y.label="# measured phenophase/s in intersect", sets.x.label = "# measured phenophase")
 dev.off()
@@ -377,7 +380,7 @@ siggroupsGpD <- c(" "," ","-","-", #mph ****no phytohormone records***
 				"a","a","b","-")#, #loc; at .9: a a b; at. 95 "ab","a","b","-"
 
 #plot main text figure
-pdf("means_ses_and prelim fitted diffs from binom slim 90hpdi.pdf",height=6,width=4)
+pdf("Figure 2 means ses and sig diffs from binom 90hpdi.pdf",height=6,width=4)
 xvals <- c(seq(from=0,to=1,length.out=c(4+4+4) ))
 xlab <- c("nutrients","other beneficial","pathogen","phytohormones","bacteria","mycorrhizal fungi","mixed","other fungi","multiple","root","seed","shoot")
 par(mfrow=c(3,1))
@@ -469,7 +472,7 @@ siggroupsGpD <- c("b","b","a",#scom ; recall is comm, strain, strain mix; same a
 				" "," "," ",#lh
 				"","") # mat 
 
-pdf("means_ses_and prelim fitted diffs from binom supp cats 90hpdi.pdf",height=6,width=3.5)
+pdf("means_ses_and sig diffs from binom supp cats 90hpdi.pdf",height=6,width=3.5)
 xvals <- c(seq(from=0,to=1,length.out=c(3+3+2) ))
 xlab <- c("community","strain","strain mix","annual","both","perennial","outcrosser","selfer")
 par(mfrow=c(3,1))
@@ -525,7 +528,7 @@ siggroupstrait <- c("bc","bc","b","a","c","a",#early 0.9   0.95, fruiting not di
  				 #germ less than  budburst and less than flowering, and less than floral budset
 
  				
-pdf("phenophase fitted diffs from binom 90hpdi.pdf",height=4,width=4)
+pdf("phenophase sig diffs from binom 90hpdi.pdf",height=4,width=4)
 xvals <- c(seq(from=0,to=1,length.out=6 ))
 xlab <- sort(unique(allphen$phentrait))
 par(mar=c(1,0,1,0))
@@ -582,7 +585,7 @@ siggroupsGpE <- c(" "," ","-","-", #mph ****no phytohormone records***
 siggroupsGpD <- c(" "," ","-","-", #mph ****no phytohormone records***
 				"","-","","",#tax
 				"ab","a","b","-")#, #loc; at .9: a a b; at. 95 "ab","a","b","-"
-pdf("means_ses_and prelim fitted diffs from binom slim 95hpdi.pdf",height=6,width=4)
+pdf("means_ses_and sig diffs from binom 95hpdi.pdf",height=6,width=4)
 xvals <- c(seq(from=0,to=1,length.out=c(4+4+4) ))
 xlab <- c("nutrients","other beneficial","pathogen","phytohormones","bacteria","mycorrhizal fungi","mixed","other fungi","multiple","root","seed","shoot")
 par(mfrow=c(3,1))
