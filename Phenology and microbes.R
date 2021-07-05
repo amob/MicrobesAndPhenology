@@ -120,17 +120,6 @@ write.csv(apps5,"AppendixS5.csv",row.names=F)
 #repeat above alternately for subset data, if exclude records that could not be split: some observed effects, but are not included in model results
 split_recs_scr$anyeffnum <- as.numeric(as.factor(split_recs_scr$anyeffect))-1 #
 
-###more numbers reported in text:
-flowering$anyeffnum <- as.numeric(as.factor(flowering$anyeffect))-1
-sum(tapply(flowering$anyeffnum,flowering$WOS.relevance.rank,sum) == 0) #6
-length(tapply(flowering$anyeffnum,flowering$WOS.relevance.rank,sum))#40
-germtime$anyeffnum <- as.numeric(as.factor(germtime$anyeffect))-1
-sum(tapply(germtime$anyeffnum,germtime$WOS.relevance.rank,sum) ==0)#2 
-length(tapply(germtime$anyeffnum,germtime$WOS.relevance.rank,sum))#19
-germprb$anyeffnum <- as.numeric(as.factor(germprb$anyeffect))-1 
-sum(tapply(germprb$anyeffnum,germprb$WOS.relevance.rank,sum) ==0)#1
-length(tapply(germprb$anyeffnum,germprb$WOS.relevance.rank,sum))#26-1=25
-length(unique(c(germprb$WOS.relevance.rank, germtime$WOS.relevance.rank)))#overlap 
 
 
 sapply(sort(unique(split_recs_scr$microbeNPHO)), function(z) sapply(sort(unique(split_recs_scr$micrtax)), function(k) sum(split_recs_scr$micrtax==k & split_recs_scr$microbeNPHO==z) ) )
@@ -220,6 +209,17 @@ germprb <- wosbin(split_recs_scr[split_recs_scr$phentrait=="germination prb",],"
 #low sample traits, removing, mat time=4, senec time = 2, peak flower = 9, flower sen. time = 4; floral bud duration = 9
 allphen <- wosbin(split_recs_scr[!is.na(split_recs_scr$phentrait) & (split_recs_scr$phentrait%in% c("budburst","floral budset time","flowering time","phyllochron","fruiting time","germination time")),],"WOS.relevance.rank",15)
 
+###more numbers reported in text:
+flowering$anyeffnum <- as.numeric(as.factor(flowering$anyeffect))-1
+sum(tapply(flowering$anyeffnum,flowering$WOS.relevance.rank,sum) == 0) #6
+length(tapply(flowering$anyeffnum,flowering$WOS.relevance.rank,sum))#40
+germtime$anyeffnum <- as.numeric(as.factor(germtime$anyeffect))-1
+sum(tapply(germtime$anyeffnum,germtime$WOS.relevance.rank,sum) ==0)#2 
+length(tapply(germtime$anyeffnum,germtime$WOS.relevance.rank,sum))#19
+germprb$anyeffnum <- as.numeric(as.factor(germprb$anyeffect))-1 
+sum(tapply(germprb$anyeffnum,germprb$WOS.relevance.rank,sum) ==0)#1
+length(tapply(germprb$anyeffnum,germprb$WOS.relevance.rank,sum))#26-1=25
+length(unique(c(germprb$WOS.relevance.rank, germtime$WOS.relevance.rank)))#overlap 
 
 
 ##PRIOR
