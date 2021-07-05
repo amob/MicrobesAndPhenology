@@ -2,6 +2,8 @@ library(UpSetR) #for set plots
 library(MCMCglmm) #for models
 library(grDevices) #for color
 
+
+##define useful functions
 HPDi <- function(vect,prob){
 	int <- HPDinterval(as.mcmc(vect),prob=prob)
 	return(int)
@@ -19,17 +21,13 @@ std.error <- function(dat, na.rm=TRUE) {sd(dat,na.rm=na.rm)/sqrt(length(dat))}#d
 # analyze WOS records for AjB lit review on influence of microbes plant phenology
 setwd("~/MicrobesAndPhenology/")
 
-# wos_recs <- read.csv("~/saved records WOS friday sep 11 2020 - WOS records.tsv",
-# 					sep="\t",stringsAsFactors=F,na.strings = c("NA",""))
-
 cwos_recs <- read.csv("saved records WOS friday sep 11 2020 - 500scoredWOSrecords.csv",
 					stringsAsFactors=F,na.strings = c("NA","")) 
-# split_recs <- read.csv("trimmed RECORDS FOR SPLITTING v4.csv", #sep="\t",
 split_recs <- read.csv("saved records WOS friday sep 11 2020 - Split Records.csv", #sep="\t",
 					stringsAsFactors=F,na.strings = c("NA","")) 
 split_recs$mating[which(is.na(split_recs$mating) & split_recs$WOS.relevance.rank==28) ] <- "unk" # mating system score of unknown was left out for one record
 split_recs_scr <- split_recs[!is.na(split_recs$direction.effect.split),] 
-	#several records were not possible to score for effect direction; but were relevant to microbial effects on phenology
+	#remove several records that were not possible to score for effect direction, but that were relevant to microbial effects on phenology
 
 ################################################################################
 ####Analysis of all broadly relevant records			
@@ -51,7 +49,7 @@ wos_MiP <- cwos_recs[which(MiP==1),]
 taxand <- gsub("; ", wos_rel$micrtax,replacement="&")
 locand <- gsub("; ", wos_rel$micrloc,replacement="&")
 phenand <- gsub("; ", wos_rel$phentrait_of,replacement="&")
-#replace abbreviation "prb" from phenand
+#replace abbreviation "prb" from object phenand
 phenand[phenand == "germination prb"] <- "germination probability"
 phenand[phenand == "germination time&germination prb"] <- "germination time&germination probability"
 phenand[phenand == "germination prb&flowering time"] <- "germination probability&flowering time"
@@ -70,14 +68,11 @@ upset(fromExpression(table(phenand)), nsets=15, order.by = "freq", mainbar.y.max
 dev.off()
 
 
-#mainbar.y.label = "Intersection Size",
-#	sets.x.label = "Set Size"
-
 ################################################################################
 ####Analysis of phenological timing records
 ################################################################################
 
-##numbers for text
+##calculating numbers reported in text
 
 split_recs$anyeffnum <- as.numeric(as.factor(split_recs$anyeffect))-1
 #by microbe tax
@@ -127,7 +122,7 @@ sapply(sort(unique(split_recs_scr$micrloc)), function(z) sapply(sort(unique(spli
 sapply(sort(unique(split_recs_scr$micrloc)), function(z) sapply(sort(unique(split_recs_scr$microbeNPHO)), function(k) sum(split_recs_scr$microbeNPHO==k & split_recs_scr$micrloc==z) ) )
 
 
-##split early/delay/expanded/narrowed into binomial
+##split early/delay/expanded/narrowed into binary variables
 numeric.phen.eff <- rep(NA, length=nrow(split_recs_scr))
 numeric.phen.eff[split_recs_scr$direction.effect.split=="earlier"] <- -1
 numeric.phen.eff[split_recs_scr$direction.effect.split=="delayed"] <- 1
@@ -183,20 +178,23 @@ wosbin <- function(dataframe, woscolname,nrecs){
 	return(dataframe)
 }
 
+	##using above function to bin large studies together
+	##and removing categories with too few observations to test differences 
+	   ###*** NOTE THAT SOMETIMES THERE IS STILL ONLY ONE STUDY PER CATEGORY *** 
 flowering <- wosbin(split_recs_scr[split_recs_scr$phentrait=="flowering time",],"WOS.relevance.rank",15)
-	## *** LOW SAMPLE REMOVALS FOR TOTAL TESTS, NOTE THAT SOMETIMES THERE IS STILL ONLY ONE STUDY PER CATEGORY ***  plants that both self and outcross are removed from mating system analysis
 	#low sample, removing: virus = 9
 	flowerTAX    <- wosbin(split_recs_scr[split_recs_scr$phentrait=="flowering time" & split_recs_scr$micrtax !="virus",],"WOS.relevance.rank",15)
-	#there are 0 records for seed microbe impacts on in flowering time
+	# plants that both self and outcross are removed from mating system analysis, here and for germtime and germprb objects below
 	floweringMAT <- wosbin(split_recs_scr[split_recs_scr$phentrait=="flowering time" & split_recs_scr$mating != "unk" & split_recs_scr$mating != "s+o",],"WOS.relevance.rank",15)
 	#low sample, removing: phytoH = 6
 	floweringMPH <- wosbin(split_recs_scr[split_recs_scr$phentrait=="flowering time" & !split_recs_scr$microbeNPHO%in%c( "unknown","phytohormones"),],"WOS.relevance.rank",15)
+	#there are 0 records for seed microbe impacts on in flowering time;
 germtime <- wosbin(split_recs_scr[split_recs_scr$phentrait=="germination time",],"WOS.relevance.rank",15)
-	#0 records of MF on germination time
+	#0 records of MF, mycorrizal fungi, on germination time
 	#low sample, removing: shoot = 4, 
 	germtimeLOC <- wosbin(split_recs_scr[split_recs_scr$phentrait=="germination time" & split_recs_scr$micrloc != "shoot",],"WOS.relevance.rank",15)
 	germtimeMAT <- wosbin(split_recs_scr[split_recs_scr$phentrait=="germination time" & split_recs_scr$mating != "unk" & split_recs_scr$mating != "s+o",],"WOS.relevance.rank",15)
-	#low sample, removing: phytoH = 3 path = 5
+	#low sample, removing: phytohormones = 3 pathothens = 5
 	germtimeMPH <- wosbin(split_recs_scr[split_recs_scr$phentrait=="germination time" & !split_recs_scr$microbeNPHO %in%c("unknown","pathogen","phytohormones"),],"WOS.relevance.rank",15)
 germprb <- wosbin(split_recs_scr[split_recs_scr$phentrait=="germination prb",],"WOS.relevance.rank",15)
 	#low sample, removing: MF, size = 2
@@ -206,7 +204,7 @@ germprb <- wosbin(split_recs_scr[split_recs_scr$phentrait=="germination prb",],"
 	germprbMPH <- wosbin(split_recs_scr[split_recs_scr$phentrait=="germination prb" & !split_recs_scr$microbeNPHO%in% c("unknown","pathogen"),],"WOS.relevance.rank",15)
 	#low sample, removing: shoot = 4
 	germprbLOC <- wosbin(split_recs_scr[split_recs_scr$phentrait=="germination prb" & split_recs_scr$micrloc != "shoot",],"WOS.relevance.rank",15)
-#low sample traits, removing, mat time=4, senec time = 2, peak flower = 9, flower sen. time = 4; floral bud duration = 9
+#low sample traits, removing, maturation time=4, senescense time = 2, peak flower = 9, flower senescense time = 4; floral bud duration = 9
 allphen <- wosbin(split_recs_scr[!is.na(split_recs_scr$phentrait) & (split_recs_scr$phentrait%in% c("budburst","floral budset time","flowering time","phyllochron","fruiting time","germination time")),],"WOS.relevance.rank",15)
 
 ###more numbers reported in text:
@@ -225,9 +223,8 @@ length(unique(c(germprb$WOS.relevance.rank, germtime$WOS.relevance.rank)))#overl
 ##PRIOR
 #NOTE R MUST be fixed. J Hadfield states, "The residual variance is not  identifiable in the likelihood for binary data:I have tried to  explain this intuitively in Section 2.6 of the CourseNotes using a  tasteless example of hospital deaths."
 priornuup=list(R=list(V= 1, fix=1), G=list(G1=list(V=1, nu=8)))
-	#turning this degree of belief up to solve sampling issues for random effects when studies have few tests, or tests only in one category (in which case, this biases towards all the variance being due to the treatment, rather than study)
-	#estimates for intercept and random effects became more independent, because this shunts variation to be explained by fixed effect when there isn't information in the data for the random effect
-#after fitting the flowering model with various priors for the case with random effects(prior 2 onwards, the latter two of which are meant for no-intercept models); and various levels of binning,
+	#the prior is somewhat strong for the random effects to solve sampling issues when studies have few tests, or tests only in one category 
+	#this prior keeps the model from trying too hard to fit the random effect when there isn't enough information in the data 
 
 ######BINOMIALS
  traitdiffs <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~phentrait,random = ~dummyWOSrelrank,data=allphen,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
@@ -243,7 +240,7 @@ priornuup=list(R=list(V= 1, fix=1), G=list(G1=list(V=1, nu=8)))
 	 traitDdiffs5 <- MCMCglmm(cbind(isDelayOrExp, notDelayOrExp)~phentraitga,random = ~dummyWOSrelrank,data=allphen,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 #germ less than  budburst and less than flowering, and less than floral budset
 	# germination probability and flowering duration are left out of this analysis and not compared to each other, though they have enough records,
-		# neither trait can be forced into the categories of earlier or delay; and expansion of probability for a life-history transistion is not the same as duration of a stage within a season
+		#this is because neither trait can be forced into the categories of earlier or delay; and expansion of probability for a life-history transistion is not the same as duration of a stage within a season
 
 flowerbitax <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrtax,random = ~dummyWOSrelrank,data=flowerTAX,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
 	flowerbitax2 <- MCMCglmm(cbind(isEarlyOrNrw, notEarlyOrNrw)~micrtaxmfa,random = ~dummyWOSrelrank,data=flowerTAX,family="multinomial2",prior=priornuup,verbose=F,pr=T,nitt=1000000,thin=50,burnin=1000)
@@ -343,6 +340,7 @@ flwrdlist <- list(flowering,flowering,flowering)
 germtlist <- list(germtime,germtime,germtime)
 germplist <- list(germprb,germprb,germprb)
 
+#calculate weighted meins with function
 flwrE.m <-   weightmns2(flwrdlist,cols=cols1,flowering)[[1]][-c(5,10)] 
 flwrE.se <-  weightmns2(flwrdlist,cols=cols1,flowering)[[2]][-c(5,10)]
 flwrD.m <-   weightmns2(flwrdlist,cols=cols1,flowering)[[3]][-c(5,10)]
@@ -358,7 +356,7 @@ germPD.se <- weightmns2(germplist,cols=cols1,germprb)[[4]]
 #subtracting unknown category in MPH (and virus for flowering, which is only 1 sudy with three tests), which is not useful. leaving in germP to fill gap from phytohormones, of which there are no studies in germination probability
 
 
-#fill in from model results
+#list of significant differences, filled in from model results above
 siggroupsFE <- c("a","ab","b", "-", # #mph , at 0.9 "a","ab","b", "-" ; .95 " "," "," ", "-"
 				"ab","a","b","b",#tax #at 0.9; at .9 "ab","a","b","b"; .95 "ab","a","b","ab"
 				" "," ","-"," ")#, #loc
@@ -378,6 +376,7 @@ siggroupsGpD <- c(" "," ","-","-", #mph ****no phytohormone records***
 				"","-","","",#tax
 				"a","a","b","-")#, #loc; at .9: a a b; at. 95 "ab","a","b","-"
 
+#plot main text figure
 pdf("means_ses_and prelim fitted diffs from binom slim 90hpdi.pdf",height=6,width=4)
 xvals <- c(seq(from=0,to=1,length.out=c(4+4+4) ))
 xlab <- c("nutrients","other beneficial","pathogen","phytohormones","bacteria","mycorrhizal fungi","mixed","other fungi","multiple","root","seed","shoot")
@@ -427,8 +426,10 @@ mtext("taxonomy", side = 1, at = mean(xvals[6:7]), line=9.5)
 mtext("location", side = 1, at = mean(xvals[10:11]), line=9.5)  
 dev.off()
 
-
+###################################
 ###Supplemental figures. (replaces variables for easier code, watch out if running piecewise)
+##################################
+
 
 cols1 <- c("inoctype","lifeform","mating") #"inoctype","lifeform",
 flwrdlist <- list(flowering,flowering,floweringMAT)
@@ -452,7 +453,7 @@ germPD.se <- weightmns2(germplist,cols=cols1,germprb)[[4]] [-c(8,10)]
 siggroupsFE <- c("b","a","ab",#scom  same at .95/.9
  				"a","ab","b",#lh  same at .95/.9
  				"","") 
-siggroupsFD <- c("a","b","b",#scom; same at .95/.9; looks different from model predictions
+siggroupsFD <- c("a","b","b",#scom; same at .95/.9; note looks different from model predictions
 				"","","",#lh
 				" "," ") #mat
 siggroupsGtE <- c("","","",#scom
@@ -537,7 +538,6 @@ plot(c(0,1)~I(c(0,1)),pch=NA,xlab="",ylab="",bty="n",xaxt="n",ylim=c(-0.3,1.2),y
 	text(xvals,y=1.2,siggroupstrait[1:6])
 	text(xvals,y=-0.2,siggroupstrait[7:12],col="gray")
 	mtext(side=2,"probability of observing effect",line=2)
-# 	mtext(side=3,"event time")
 	axis(side=2,at=c(0,0.25,0.5,0.75,1),labels=c(0," ",0.5, " ",1))
 legend(xvals[4],y=1.2,c("earlier","delay"),fill=c("black","gray"),bty="n")
 axis(side=1,at=xvals, labels=xlab,las=2)
@@ -630,55 +630,3 @@ mtext("mechanism", side = 1, at = mean(xvals[2:3]), line=9.5)
 mtext("taxonomy", side = 1, at = mean(xvals[6:7]), line=9.5) 
 mtext("location", side = 1, at = mean(xvals[10:11]), line=9.5)  
 dev.off()
-
-
-
-
-###The below is not used, because weighted means are closer to the raw data than data adjusted for random effects (a partial residual)
-##but this code may be of interest for exploring random effects
-
-##get means, but adjusting for by study random effect category
-### the goal is to extract and subtract from the raw means the estimated study effect
-	#because the effects are estimated on the latent scale, we have to indirectly get the adjustment for the data on raw scale
-		#we get the difference between the mean prediction at each response variable category at the mean of the random effect distribution (0) from each actual study bin's random effect
-		#this table gives the amount we have estimated that our observed data is inflated/deflated due to the random effects
-		#we then apply this adjustment to the raw means by study & treatment, and take the row means.
-		#we have not (and cannot with this data) estimate effects of studies on the variance in the data, thus there is no adjustment to the SE
-# weightmns <- function(dataframe, cols,modslistE,modslistD){
-# 	typelist <- lapply(cols, function(x) sort(unique(dataframe[,x])))
-# 	wos <- sort(unique(dataframe$dummyWOSrelrank))#random effects in model are automatically sorted
-# 	xEmn <- lapply(1:length(typelist), function(type) sapply(typelist[[type]], function(m)  sapply(wos, function(w)  mean(dataframe$isEarlyOrNrw[dataframe$dummyWOSrelrank==w & dataframe[,which(colnames(dataframe)==cols[type])]==m] )   )))
-# 	ltrts <- lapply(typelist,length)
-# 	if(ltrts>2){  #bad code , but works because the only time I use this function when ltrts is less than two, there's only one model, so it is first.
-# 		prdwrE <-lapply(1:length(typelist), function(T) sapply( (ltrts[[T]]+1):(ltrts[[T]]+length(wos)), function(x) 
-# 				invlogistic(mean(modslistE[[T]]$Sol[,1])  + mean(modslistE[[T]]$Sol[,x])+c(0,colMeans(modslistE[[T]]$Sol[,2:ltrts[[T]]])) )    )   )
-# 		pbaseE <-lapply(1:length(typelist), function(T) 
-# 				invlogistic(mean(modslistE[[T]]$Sol[,1])  +c(0,colMeans(modslistE[[T]]$Sol[,2:ltrts[[T]]])) )       )
-# 	} else { #assume at least two treatments!
-# 		prdwrE <-lapply(1:length(typelist), function(T) sapply( (ltrts[[T]]+1):(ltrts[[T]]+length(wos)), function(x) 
-# 				invlogistic(mean(modslistE[[T]]$Sol[,1])  + mean(modslistE[[T]]$Sol[,x])+c(0,mean(modslistE[[T]]$Sol[,2])) )    )   )
-# 		pbaseE <-lapply(1:length(typelist), function(T) 
-# 				invlogistic(mean(modslistE[[T]]$Sol[,1])  +c(0,mean(modslistE[[T]]$Sol[,2])) )       )
-# 	}
-# 	xE.m <- unlist( lapply(1:length(prdwrE), function(T)   rowMeans(t(xEmn[[T]]) - (prdwrE[[T]] - pbaseE[[T]]), na.rm=T) ) )
-# 	xEse <- lapply(1:length(typelist), function(type) sapply(typelist[[type]], function(m)  sapply(wos, function(w)  std.error(dataframe$isEarlyOrNrw[dataframe$dummyWOSrelrank==w & dataframe[,which(colnames(dataframe)==cols[type])]==m] )   )))
-# 	xE.se <-unlist(lapply(1:length(xEse), function(type)  sapply(1:ncol(xEse[[type]]), function(m) mean(xEse[[type]][,m],na.rm=T))))
-# # 	xE.m <- unlist(lapply(1:length(xEmn), function(type) colMeans(xEmn[[type]],na.rm=T)))
-# 	if(ltrts>2){
-# 		prdwrD <-lapply(1:length(typelist), function(T) sapply( (ltrts[[T]]+1):(ltrts[[T]]+length(wos)), function(x) 
-# 				invlogistic(mean(modslistD[[T]]$Sol[,1])  + mean(modslistD[[T]]$Sol[,x])+c(0,colMeans(modslistD[[T]]$Sol[,2:ltrts[[T]]])) )    )   )
-# 		pbaseD <-lapply(1:length(typelist), function(T) 
-# 				invlogistic(mean(modslistD[[T]]$Sol[,1])  +c(0,colMeans(modslistD[[T]]$Sol[,2:ltrts[[T]]])) )       )
-# 	} else { #assume at least two treatments!
-# 		prdwrD <-lapply(1:length(typelist), function(T) sapply( (ltrts[[T]]+1):(ltrts[[T]]+length(wos)), function(x) 
-# 				invlogistic(mean(modslistD[[T]]$Sol[,1])  + mean(modslistD[[T]]$Sol[,x])+c(0,mean(modslistD[[T]]$Sol[,2])) )    )   )
-# 		pbaseD <-lapply(1:length(typelist), function(T) 
-# 				invlogistic(mean(modslistD[[T]]$Sol[,1])  +c(0,mean(modslistD[[T]]$Sol[,2])) )       )
-# 	}
-#  	xDmn <- lapply(1:length(typelist), function(type) sapply(typelist[[type]], function(m)  sapply(wos, function(w)  mean(dataframe$isDelayOrExp[dataframe$dummyWOSrelrank==w & dataframe[,which(colnames(dataframe)==cols[type])]==m] )   )))
-# 	xD.m <- unlist( lapply(1:length(prdwrD), function(T)   rowMeans(t(xDmn[[T]]) - (prdwrD[[T]] - pbaseD[[T]]), na.rm=T) ) )
-# 	xDse <- lapply(1:length(typelist), function(type) sapply(typelist[[type]], function(m)  sapply(wos, function(w)  std.error(dataframe$isDelayOrExp[dataframe$dummyWOSrelrank==w & dataframe[,which(colnames(dataframe)==cols[type])]==m] )   )))
-# # 	xD.m <- unlist(lapply(1:length(xDmn), function(type) colMeans(xDmn[[type]],na.rm=T)))
-# 	xD.se <-unlist(lapply(1:length(xDse), function(type)  sapply(1:ncol(xDse[[type]]), function(m) mean(xDse[[type]][,m],na.rm=T))))
-# 	return(list(xE.m,xE.se,xD.m,xD.se))
-# }
