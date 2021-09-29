@@ -84,7 +84,7 @@ upset(fromExpression(table(locand)),nsets=10, order.by = "freq", mainbar.y.max=1
 dev.off()
 
 #Figure 3
-pdf("Figure 3 upsetrtrt.pdf",width=5,height=5)
+pdf("Figure 2 upsetrtrt.pdf",width=5,height=5)
 upset(fromExpression(table(phenand)), nsets=15, order.by = "freq", mainbar.y.max = 25.5,
 	mainbar.y.label="No. measured phenophase/s in intersect", sets.x.label = "No. measured phenophase")
 dev.off()
@@ -399,7 +399,7 @@ siggroupsGpD <- c(" "," ","-","-", #mph ****no phytohormone records***
 				"a","a","b","-")#, #loc; at .9: a a b; at. 95 "ab","a","b","-"
 
 #plot main text figure
-pdf("Figure 2 means ses and sig diffs from binom 90hpdi.pdf",height=6,width=4)
+pdf("Figure 3 means ses and sig diffs from binom 90hpdi.pdf",height=6,width=4)
 xvals <- c(seq(from=0,to=1,length.out=c(4+4+4) ))
 xlab <- c("Nutrients","Other beneficial","Pathogen","Phytohormones","Bacteria","Mycorrhizal fungi","Mixed","Other fungi","Multiple","Root","Seed","Shoot")
 par(mfrow=c(3,1))
